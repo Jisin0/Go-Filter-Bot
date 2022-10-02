@@ -45,13 +45,13 @@ type Filter struct {
 	Markup [][]map[string]string `bson:"button"`
 
 	//Alerts saved for a filter if any
-	Alerts []string
+	Alerts []string `bson:"alert"`
 
 	//Length of the text according to which filters are sorted
-	Length int
+	Length int `bson:"length"`
 
 	//Type of media saved if any
-	MediaType string
+	MediaType string `bson:"mediaType"`
 }
 
 func NewDatabase() Database {
