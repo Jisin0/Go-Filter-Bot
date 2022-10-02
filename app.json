@@ -1,0 +1,38 @@
+{
+    "name": "Go Filter Bot",
+    "description": "A Simple yet superfast Filter bot written in pure Go",
+    "logo": "https://raw.githubusercontent.com/Jisin0/Go-Filter-Bot/logo.jpg",
+    "keywords": [
+        "Go",
+        "Filter",
+        "Mongo DB"
+    ],
+    "website": "https://github.com/Jisin0",
+    "repository": "https://github.com/Jisin0/Go-Filter-Bot",
+    "success_url": "https://telegram.dog/Jisin0",
+    "env": {
+        "BOT_TOKEN": {
+            "description": "Your Bot Token From @BotFather",
+            "value": ""
+        },
+        "MONGODB_URI": {
+            "description": "Your Mongo DB URL Obtained From mongodb.com",
+            "value": ""
+        },
+        "ADMINS": {
+            "description": "A List Ids of bot admins seperated by spaces.",
+            "value": ""
+        }
+    },
+    "buildpacks": [
+        {
+            "url": "https://github.com/heroku/heroku-buildpack-go.git"
+        }
+    ],
+    "formation": {
+        "worker": {
+            "quantity": 1,
+            "size": "free"
+        }
+    }
+}
