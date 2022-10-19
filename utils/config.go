@@ -74,6 +74,10 @@ Rᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ -><code>/filter "keyword"</code>
  ~ Full Broadcast - Broadcast to all of the bot users <code>/broadcast</code>
  ~ Concast - Broadcast to only users who are connected to a chat <code>/concast</code>
 `,
+
+	"HELP": `
+<b>To know how to use my modules use the buttons below to get all my commands with usage examples !</b>
+`,
 }
 
 var BUTTONS map[string][][]gotgbot.InlineKeyboardButton = map[string][][]gotgbot.InlineKeyboardButton{
@@ -81,7 +85,7 @@ var BUTTONS map[string][][]gotgbot.InlineKeyboardButton = map[string][][]gotgbot
 		{
 			{Text: "☂ Aʙᴏᴜᴛ ☂", CallbackData: "edit(ABOUT)"},
 			{Text: "🧭 Help 🧭", CallbackData: "edit(HELP)"},
-			{Text: "🫂 Sᴜᴘᴘᴏʀᴛ 🫂", Url: "t.me/Jisin_0"},
+			{Text: "🫂 Sᴜᴘᴘᴏʀᴛ 🫂", Url: "t.me/Jisin0"},
 		},
 	},
 	"ABOUT": {
