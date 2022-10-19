@@ -62,11 +62,9 @@ func MFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		for res.Next(context.TODO()) {
 			var f database.Filter
 			res.Decode(&f)
-			fmt.Println(f)
 			text := `(?i)( |^|[^\w])` + f.Text + `( |$|[^\w])`
 			pattern := regexp.MustCompile(text)
 			m := pattern.FindStringSubmatch(message)
-			fmt.Println(m)
 			if len(m) > 0 {
 				sendFilter(f, bot, update, chat_id, message_id)
 			}
@@ -271,13 +269,13 @@ func StopMfilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 	split := strings.SplitN(update.Text, " ", 2)
 	var key string
 
-	if split[1] == "" && update.Chat.Type == "private" {
+	if len(split) < 2 && update.Chat.Type == "private" {
 		update.Reply(bot, "Ok Now Send Me The Name OF The Filter You Would Like To Stop ...", &gotgbot.SendMessageOpts{})
 		utils.Listen(customfilters.Listen(update), func(_ *gotgbot.Bot, ctx2 *ext.Context) error {
 			key = ctx2.Message.Text
 			return nil
 		})
-	} else if split[1] == "" {
+	} else if len(split) < 2 {
 		update.Reply(bot, "Whoops looks like you forgot to mention a filter to stop !", &gotgbot.SendMessageOpts{})
 	} else {
 		key = split[1]
@@ -459,20 +457,22 @@ func sendFilter(f database.Filter, bot *gotgbot.Bot, update *gotgbot.Message, ch
 	if mediaType != "" {
 		fileId := f.FileID
 
-		if mediaType == "document" {
+		switch mediaType {
+		case "document":
 			_, err = bot.SendDocument(chat_id, fileId, &gotgbot.SendDocumentOpts{Caption: content, ReplyToMessageId: message_id, ReplyMarkup: markup, ParseMode: "HTML"})
-		} else if mediaType == "sticker" {
+		case "sticker":
 			_, err = bot.SendSticker(chat_id, fileId, &gotgbot.SendStickerOpts{ReplyToMessageId: message_id, ReplyMarkup: markup})
-		} else if mediaType == "video" {
+		case "video":
 			_, err = bot.SendVideo(chat_id, fileId, &gotgbot.SendVideoOpts{Caption: content, ReplyToMessageId: message_id, ReplyMarkup: markup, ParseMode: "HTML"})
-		} else if mediaType == "photo" {
+		case "photo":
 			_, err = bot.SendPhoto(chat_id, fileId, &gotgbot.SendPhotoOpts{Caption: content, ReplyToMessageId: message_id, ReplyMarkup: markup, ParseMode: "HTML"})
-		} else if mediaType == "audio" {
+		case "audio":
 			_, err = bot.SendAudio(chat_id, fileId, &gotgbot.SendAudioOpts{Caption: content, ReplyToMessageId: message_id, ReplyMarkup: markup, ParseMode: "HTML"})
-		} else if mediaType == "animation" {
+		case "animation":
 			_, err = bot.SendAnimation(chat_id, fileId, &gotgbot.SendAnimationOpts{Caption: content, ReplyToMessageId: message_id, ReplyMarkup: markup, ParseMode: "HTML"})
-		} else {
+		default:
 			fmt.Println("Unknown media type" + mediaType)
+
 		}
 	} else {
 		_, err = update.Reply(bot, content, &gotgbot.SendMessageOpts{ReplyToMessageId: message_id, ReplyMarkup: markup, ParseMode: "HTML"})

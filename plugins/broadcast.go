@@ -21,23 +21,34 @@ func Broadcast(bot *gotgbot.Bot, ctx *ext.Context) error {
 	cursor, _ := DB.Ucol.Find(context.TODO(), bson.D{{}})
 	update := ctx.Message
 
+	if update.ReplyToMessage == nil {
+		update.Reply(bot, "Please reply this command to the message you would like to broadcast !", &gotgbot.SendMessageOpts{})
+		return nil
+	}
+
+	msg := update.ReplyToMessage
+
 	var isText bool = false
 	var isMedia bool = false
 	var caption string
-	var markup *gotgbot.InlineKeyboardMarkup
+	var markup *gotgbot.InlineKeyboardMarkup = &gotgbot.InlineKeyboardMarkup{}
 	var total int
 	var sent int
 	var failed int
 	var id int64
 
-	if update.Text != "" {
+	if msg.Text != "" {
 		isText = true
 	} else {
 		isMedia = true
-		caption = update.OriginalCaptionHTML()
+		caption = msg.OriginalCaptionHTML()
 	}
 
-	markup = update.ReplyMarkup
+	if msg.ReplyMarkup != nil {
+		markup = &gotgbot.InlineKeyboardMarkup{InlineKeyboard: msg.ReplyMarkup.InlineKeyboard}
+	}
+
+	stat, _ := update.Reply(bot, "<code>Starting broadcast ...</code>", &gotgbot.SendMessageOpts{ParseMode: "HTML"})
 
 	for cursor.Next(context.TODO()) {
 		var doc bson.M
@@ -57,18 +68,19 @@ func Broadcast(bot *gotgbot.Bot, ctx *ext.Context) error {
 		}
 
 		if isText {
-			_, err := update.Copy(
+			_, err := msg.Copy(
 				bot,
 				id,
 				&gotgbot.CopyMessageOpts{ReplyMarkup: markup},
 			)
 			if err != nil {
+				fmt.Println(err)
 				failed += 1
 			} else {
 				sent += 1
 			}
 		} else if isMedia {
-			_, err := update.Copy(
+			_, err := msg.Copy(
 				bot,
 				id,
 				&gotgbot.CopyMessageOpts{Caption: caption, ParseMode: "HTML", ReplyMarkup: markup},
@@ -82,7 +94,7 @@ func Broadcast(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 		total += 1
 
-		_, _, er := update.EditText(
+		_, _, er := stat.EditText(
 			bot,
 			fmt.Sprintf(`
 <u>Live Broadcast Stats :</u>
@@ -99,7 +111,7 @@ Total   : %v
 		}
 	}
 
-	update.EditText(
+	stat.EditText(
 		bot,
 		fmt.Sprintf(`
 <b><u>Broadcast Completed :</u></b>
@@ -124,29 +136,41 @@ func ConCast(bot *gotgbot.Bot, ctx *ext.Context) error {
 	cursor, _ := DB.Ucol.Find(context.TODO(), bson.D{{Key: "connected", Value: bson.D{{Key: "$exists", Value: true}}}})
 	update := ctx.Message
 
+	if update.ReplyToMessage == nil {
+		update.Reply(bot, "Please reply this command to the message you would like to broadcast !", &gotgbot.SendMessageOpts{})
+		return nil
+	}
+
+	msg := update.ReplyToMessage
+
 	var isText bool = false
 	var isMedia bool = false
 	var caption string
-	var markup *gotgbot.InlineKeyboardMarkup
+	var markup *gotgbot.InlineKeyboardMarkup = &gotgbot.InlineKeyboardMarkup{}
 	var total int
 	var sent int
 	var failed int
 	var id int64
 
-	if update.Text != "" {
+	if msg.Text != "" {
 		isText = true
 	} else {
 		isMedia = true
-		caption = update.OriginalCaptionHTML()
+		caption = msg.OriginalCaptionHTML()
 	}
 
-	markup = update.ReplyMarkup
+	if msg.ReplyMarkup != nil {
+		markup = &gotgbot.InlineKeyboardMarkup{InlineKeyboard: msg.ReplyMarkup.InlineKeyboard}
+	}
+
+	stat, _ := update.Reply(bot, "<code>Starting concast ...</code>", &gotgbot.SendMessageOpts{ParseMode: "HTML"})
 
 	for cursor.Next(context.TODO()) {
 		var doc bson.M
 
 		cursor.Decode(&doc)
 
+		//Just in case, to prevent unwanted crashes
 		rawId, ok := doc["_id"]
 		if !ok {
 			continue
@@ -159,7 +183,7 @@ func ConCast(bot *gotgbot.Bot, ctx *ext.Context) error {
 		}
 
 		if isText {
-			_, err := update.Copy(
+			_, err := msg.Copy(
 				bot,
 				id,
 				&gotgbot.CopyMessageOpts{ReplyMarkup: markup},
@@ -170,7 +194,7 @@ func ConCast(bot *gotgbot.Bot, ctx *ext.Context) error {
 				sent += 1
 			}
 		} else if isMedia {
-			_, err := update.Copy(
+			_, err := msg.Copy(
 				bot,
 				id,
 				&gotgbot.CopyMessageOpts{Caption: caption, ParseMode: "HTML", ReplyMarkup: markup},
@@ -184,7 +208,7 @@ func ConCast(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 		total += 1
 
-		_, _, er := update.EditText(
+		_, _, er := stat.EditText(
 			bot,
 			fmt.Sprintf(`
 <u>Live Concast Stats :</u>
@@ -201,7 +225,7 @@ Total   : %v
 		}
 	}
 
-	update.EditText(
+	stat.EditText(
 		bot,
 		fmt.Sprintf(`
 <b><u>Concast Completed :</u></b>
@@ -212,7 +236,6 @@ Total   : %v
 `, sent, failed, total),
 		&gotgbot.EditMessageTextOpts{ParseMode: "HTML"},
 	)
-
 	return nil
 }
 
