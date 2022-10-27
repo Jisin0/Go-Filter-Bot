@@ -20,10 +20,10 @@ func Listen(m *gotgbot.Message) filters.Message {
 	}
 }
 
-func AllGroup(msg *gotgbot.Message) bool {
+func PrivateOrGroup(msg *gotgbot.Message) bool {
 	//A Function To Filter Group & SuperGroup Message
 
-	return msg.Chat.Type == "supergroup" || msg.Chat.Type == "group"
+	return msg.Chat.Type == "supergroup" || msg.Chat.Type == "group" || msg.Chat.Type == "private"
 }
 
 func Chats(chatId []int64) filters.Message {
