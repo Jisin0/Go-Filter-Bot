@@ -4,5 +4,5 @@ RUN mkdir /App
 WORKDIR /App
 RUN cd /App
 COPY . .
-RUN go build .
-CMD ["./GoAutoFilter"]
+
+CMD ["go","run","."]
