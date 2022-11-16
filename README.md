@@ -79,8 +79,6 @@ You must set the Run command to :
 </p>
 </details>
 
-[![Deploy on Railway]()]()
-
 <details><summary>Run Locally/VPS</summary>
 <p>
 You must have the latest version of <a href="golang.org">go</a> installed first
