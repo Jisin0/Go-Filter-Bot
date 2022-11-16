@@ -4,7 +4,7 @@
 
 <img src="logo.jpg" alt="Logo">
 
-  A Simple Yet Superfast Filter Bot Written In Go Inspired By <a href='https://github.com/TrojanzHex/Unlimited-Filter-Bot'>Unlimimted-Filter-Bot</a> with global filter support.
+  <b>A Simple Yet Superfast Filter Bot Written In Go Inspired By <a href='https://github.com/TrojanzHex/Unlimited-Filter-Bot'>Unlimimted-Filter-Bot</a> with global filter support.</b>
 </p>
 
 ## Commands

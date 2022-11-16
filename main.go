@@ -17,6 +17,19 @@ import (
 
 func main() {
 
+	//Run a useless http server to get a healthy build on koyeb
+	go func() {
+		port := os.Getenv("PORT")
+
+		if port == "" {
+			port = "8080"
+		}
+
+		http.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
+			fmt.Fprintf(w, "Waku Waku")
+		})
+	}()
+
 	token := os.Getenv("BOT_TOKEN")
 	if token == "" {
 		panic("Exiting Because No BOT_TOKEN Provided :(")
