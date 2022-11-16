@@ -4,7 +4,7 @@
 
 <img src="logo.jpg" alt="Logo">
 
-  A Simple Yet Superfast Filter Bot Written In Go Inspired By <a href='https://github.com/TrojanzHex/Unlimited-Filter-Bot'>Unlimimted-Filter-Bot</a> with global filter support.
+  <b>A Simple Yet Superfast Filter Bot Written In Go Inspired By <a href='https://github.com/TrojanzHex/Unlimited-Filter-Bot'>Unlimimted-Filter-Bot</a> with global filter support.</b>
 </p>
 
 ## Commands
@@ -33,6 +33,48 @@
 <br>
 <a href="https://heroku.com/deploy?template=https://github.com/Jisin0/Go-Filter-Bot/tree/main">
   <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy">
+</a>
+</p>
+</details>
+
+
+<details><summary>Deploy To Render</summary>
+<p>
+<br>
+<a href="https://render.com/deploy?repo=https://github.com/Jisin0/Go-Filter-Bot">
+  <img src="https://render.com/images/deploy-to-render-button.svg" alt="deploy-to-render">
+</a>
+</p>
+</details>
+
+
+<details><summary>Deploy To Koyeb</summary>
+<p>
+<br>
+<a href="https://app.koyeb.com/deploy?type=git&repository=github.com/Jisin0/Go-Filter-Bot&branch=main">
+  <img src="https://www.koyeb.com/static/images/deploy/button.svg" alt="deploy-to-koyeb">
+</a>
+</p>
+<p>
+You must set the Run command to :
+<pre>./bin/Go-Filter-Bot</pre>
+</p>
+</details>
+
+<details><summary>Deploy To Okteto</summary>
+<p>
+<br>
+<a href="https://cloud.okteto.com/deploy?repository=https://github.com/Jisin0/Go-Filter-Bot">
+  <img src="https://okteto.com/develop-okteto.svg" alt="deploy-to-okteto">
+</a>
+</p>
+</details>
+
+<details><summary>Deploy To Railway</summary>
+<p>
+<br>
+<a href="https://railway.app/new/template?template=https%3A%2F%2Fgithub.com%2FJisin0%2FGo-Filter-Bot">
+  <img src="https://railway.app/button.svg" alt="deploy-to-railway">
 </a>
 </p>
 </details>
