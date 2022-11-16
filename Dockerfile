@@ -5,4 +5,5 @@ WORKDIR /App
 RUN cd /App
 COPY . .
 RUN go build .
-CMD ["./GoAutoFilter"]
+
+CMD ["./Go-Filter-Bot"]
