@@ -45,6 +45,21 @@
   <img src="https://render.com/images/deploy-to-render-button.svg" alt="deploy-to-render">
 </a>
 </p>
+<p>
+Make sure to have the following options set :
+
+<b>Environment</b>
+<pre>Go</pre>
+
+<b>Build Command</b>
+<pre>go build .</pre>
+
+<b>Start Command</b>
+<pre>./Go-Filter-Bot</pre>
+
+<b>Advanced >> Health Check Path</b>
+<pre>/</pre>
+</p>
 </details>
 
 
