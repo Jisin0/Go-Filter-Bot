@@ -1,0 +1,10 @@
+services:
+  drone-vc-p:
+    build: .
+    environment:
+      BOT_TOKEN: $BOT_TOKEN 
+      ADMINS: $ADMINS
+      MONGODB_URI: $MONGODB_URI
+    resources:
+      cpu: 1000m
+      memory: 3Gi
