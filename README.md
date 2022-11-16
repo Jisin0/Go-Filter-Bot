@@ -37,6 +37,17 @@
 </p>
 </details>
 
+
+<details><summary>Deploy To Render</summary>
+<p>
+<br>
+<a href="https://render.com/deploy?repo=https://github.com/Jisin0/Go-Filter-Bot">
+  <img src="https://render.com/images/deploy-to-render-button.svg" alt="deploy-to-render">
+</a>
+</p>
+</details>
+
+
 <details><summary>Deploy To Koyeb</summary>
 <p>
 <br>
@@ -49,6 +60,26 @@ You must set the Run command to :
 <pre>./bin/Go-Filter-Bot</pre>
 </p>
 </details>
+
+<details><summary>Deploy To Okteto</summary>
+<p>
+<br>
+<a href="https://cloud.okteto.com/deploy?repository=https://github.com/Jisin0/Go-Filter-Bot">
+  <img src="https://okteto.com/develop-okteto.svg" alt="deploy-to-okteto">
+</a>
+</p>
+</details>
+
+<details><summary>Deploy To Railway</summary>
+<p>
+<br>
+<a href="https://railway.app/new/template?template=https%3A%2F%2Fgithub.com%2FJisin0%2FGo-Filter-Bot">
+  <img src="https://railway.app/button.svg" alt="deploy-to-railway">
+</a>
+</p>
+</details>
+
+[![Deploy on Railway]()]()
 
 <details><summary>Run Locally/VPS</summary>
 <p>
