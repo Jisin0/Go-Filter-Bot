@@ -45,9 +45,10 @@ func main() {
 	}
 
 	//To make sure no other instance of the bot is running
-	_, er := b.GetUpdates(&gotgbot.GetUpdatesOpts{})
+	_, err = b.GetUpdates(&gotgbot.GetUpdatesOpts{})
 	if err != nil {
-		panic("failed to get updates : " + er.Error())
+		fmt.Println("Exiting because : " + err.Error())
+		return
 	}
 
 	// Create updater and dispatcher.
