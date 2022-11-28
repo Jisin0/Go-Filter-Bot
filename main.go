@@ -44,12 +44,18 @@ func main() {
 		panic("failed to create new bot: " + err.Error())
 	}
 
+	//To make sure no other instance of the bot is running
+	_, er := b.GetUpdates(&gotgbot.GetUpdatesOpts{})
+	if err != nil {
+		panic("failed to get updates : " + er.Error())
+	}
+
 	// Create updater and dispatcher.
 	updater := ext.NewUpdater(&ext.UpdaterOpts{
 		ErrorLog: nil,
 		DispatcherOpts: ext.DispatcherOpts{
 			// If an error is returned by a handler, log it and continue going.
-			Error: func(b *gotgbot.Bot, ctx *ext.Context, err error) ext.DispatcherAction {
+			Error: func(_ *gotgbot.Bot, _ *ext.Context, err error) ext.DispatcherAction {
 				fmt.Println("an error occurred while handling update:", err.Error())
 				return ext.DispatcherActionNoop
 			},
