@@ -38,28 +38,38 @@ func Chats(chatId []int64) filters.Message {
 }
 
 func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
-	var user_id int64
-	msg := ctx.Message
+
+	var userId int64
+
+	var msg gotgbot.MaybeInaccessibleMessage
 	if ctx.CallbackQuery != nil {
 		msg = ctx.CallbackQuery.Message
-		user_id = ctx.CallbackQuery.From.Id
+		userId = ctx.CallbackQuery.From.Id
 	} else {
-		user_id = msg.From.Id
+		msg = ctx.Message
+		userId = msg.(*gotgbot.Message).From.Id
 	}
-	chatType := msg.Chat.Type
+
+	chatType := msg.GetChat().Type
+	chatId := msg.GetChat().Id
+
 	var c int64
 	if chatType == "supergroup" || chatType == "group" {
-		if user_id == 0 {
-			msg.Reply(
-				bot,
+		if userId == 0 {
+			bot.SendMessage(
+				chatId,
 				"Sorry It Looks Like You Are Anonymous Please Connect From Pm And Use Me Or Turn Off Anonymous :(",
-				&gotgbot.SendMessageOpts{},
+				&gotgbot.SendMessageOpts{
+					ReplyParameters: &gotgbot.ReplyParameters{
+						MessageId: msg.GetMessageId(),
+					},
+				},
 			)
 			return c, false
 		}
-		cachedAdmins, ok := CachedAdmins[msg.Chat.Id]
+		cachedAdmins, ok := CachedAdmins[chatId]
 		if !ok {
-			admins, e := msg.Chat.GetAdministrators(bot)
+			admins, e := msg.GetChat().GetAdministrators(bot, &gotgbot.GetChatAdministratorsOpts{})
 			var newAdmins []int64
 			if e != nil {
 				return c, false
@@ -68,18 +78,22 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 				newAdmins = append(newAdmins, admin.GetUser().Id)
 			}
 
-			CachedAdmins[msg.Chat.Id] = newAdmins
+			CachedAdmins[chatId] = newAdmins
 
 			for _, admin := range newAdmins {
-				if user_id == admin {
+				if userId == admin {
 					return c, true
 				}
 			}
 			if ctx.CallbackQuery == nil {
-				msg.Reply(
-					bot,
+				bot.SendMessage(
+					chatId,
 					"Who dis non-admin telling me what to do !",
-					&gotgbot.SendMessageOpts{},
+					&gotgbot.SendMessageOpts{
+						ReplyParameters: &gotgbot.ReplyParameters{
+							MessageId: msg.GetMessageId(),
+						},
+					},
 				)
 			} else {
 				ctx.CallbackQuery.Answer(bot, &gotgbot.AnswerCallbackQueryOpts{Text: "Who dis non-admin telling me what to do !", ShowAlert: true})
@@ -87,16 +101,20 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 			return c, false
 		} else {
 			for _, admin := range cachedAdmins {
-				if user_id == admin {
+				if userId == admin {
 					return c, true
 				}
 			}
 
 			if ctx.CallbackQuery == nil {
-				msg.Reply(
-					bot,
+				bot.SendMessage(
+					chatId,
 					"Hey You're Not An Admin, If You Are A New Admin Use The /updateadmins Command To Update Current List !",
-					&gotgbot.SendMessageOpts{ReplyToMessageId: msg.MessageId},
+					&gotgbot.SendMessageOpts{
+						ReplyParameters: &gotgbot.ReplyParameters{
+							MessageId: msg.GetMessageId(),
+						},
+					},
 				)
 			} else {
 				ctx.CallbackQuery.Answer(bot, &gotgbot.AnswerCallbackQueryOpts{Text: "Who dis non-admin telling me what to do !", ShowAlert: true})
@@ -105,12 +123,16 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 			return c, false
 		}
 	} else if chatType == "private" {
-		c, ok := DB.GetConnection(user_id)
+		c, ok := DB.GetConnection(userId)
 		if !ok {
-			msg.Reply(
-				bot,
+			bot.SendMessage(
+				chatId,
 				"Sorry You Have To Connect To A Chat To Use This Command Here :(",
-				&gotgbot.SendMessageOpts{},
+				&gotgbot.SendMessageOpts{
+					ReplyParameters: &gotgbot.ReplyParameters{
+						MessageId: msg.GetMessageId(),
+					},
+				},
 			)
 			return c, false
 		}
