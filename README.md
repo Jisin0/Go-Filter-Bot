@@ -26,6 +26,7 @@
 - [X] `BOT_TOKEN` : Bot token obtained by creating a bot from [@BotFather](https://telegram.dog/BotFather).
 - [X] `MONGODB_URI` : [MongoDB](https://www.mongodb.com) URI. Get this value from [mongoDB](https://www.mongodb.com). For more help watch this [video](https://youtu.be/1G1XwEOnxxo).
 - [X] `ADMINS` : Telegram user ids' of bot admins seperated by spaces.
+- [X] `PORT` : The port on which the webapp should run (use 10000 on render)
 
 ## Deploy
 <details><summary>Deploy To Heroku</summary>

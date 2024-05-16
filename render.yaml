@@ -1,0 +1,14 @@
+services :
+   - type : web
+     name : gofilterbot
+     runtime : go
+     repo : https://github.com/Jisin0/Go-Filter-Bot.git
+     buildCommand: go build .
+     startCommand: ./Go-Filter-Bot
+     envVars :
+       - key: MONGODB_URI
+         value : your-mongodb-uri
+       - key: ADMINS
+         value: list-of-admins
+       - key: BOT_TOKEN
+         value : your-bots-token

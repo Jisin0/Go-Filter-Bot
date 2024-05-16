@@ -28,6 +28,8 @@ func main() {
 		http.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
 			fmt.Fprintf(w, "Waku Waku")
 		})
+
+		http.ListenAndServe(":"+port, nil)
 	}()
 
 	token := os.Getenv("BOT_TOKEN")
