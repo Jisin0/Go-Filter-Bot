@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/Jisin0/Go-Filter-Bot/utils"
-	"github.com/Jisin0/Go-Filter-Bot/utils/customfilters"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 )
@@ -30,13 +29,12 @@ func Connect(bot *gotgbot.Bot, update *ext.Context) error {
 			args := strings.Split(update.Message.Text, " ")
 			var chat_raw string
 			if len(args) < 2 {
-				utils.Listen(
-					customfilters.Listen(update.Message),
-					func(_ *gotgbot.Bot, ctx *ext.Context) error {
-						chat_raw = strings.Split(ctx.Message.Text, " ")[0]
-						return nil
-					},
-				)
+				m := utils.Ask(bot, "Please send the id of the chat you would like to connect to : ", update.EffectiveChat, update.EffectiveUser)
+				if m == nil {
+					return nil
+				}
+
+				chat_raw = m.Text
 			} else {
 				chat_raw = args[1]
 			}
@@ -51,7 +49,7 @@ func Connect(bot *gotgbot.Bot, update *ext.Context) error {
 				return nil
 			} else {
 				//Verify and connect
-				admins, err := bot.GetChatAdministrators(chat_id)
+				admins, err := bot.GetChatAdministrators(chat_id, &gotgbot.GetChatAdministratorsOpts{})
 				if err != nil {
 					update.Message.Reply(
 						bot,
@@ -93,7 +91,7 @@ func Connect(bot *gotgbot.Bot, update *ext.Context) error {
 				return nil
 			} else {
 				//Verification stuff
-				admins, _ := bot.GetChatAdministrators(update.Message.Chat.Id)
+				admins, _ := bot.GetChatAdministrators(update.Message.Chat.Id, &gotgbot.GetChatAdministratorsOpts{})
 
 				for _, admin := range admins {
 					if update.Message.From.Id == admin.GetUser().Id {
@@ -125,16 +123,16 @@ func CbConnect(bot *gotgbot.Bot, update *ext.Context) error {
 	//Function to handle callback from connect button
 	action := cbConnectRegex.FindStringSubmatch(update.CallbackQuery.Data)[1]
 	if action == "con" {
-		admins, _ := bot.GetChatAdministrators(update.CallbackQuery.Message.Chat.Id)
+		admins, _ := bot.GetChatAdministrators(update.CallbackQuery.Message.GetChat().Id, &gotgbot.GetChatAdministratorsOpts{})
 
 		for _, admin := range admins {
 			if update.CallbackQuery.From.Id == admin.GetUser().Id {
-				DB.ConnectUser(update.CallbackQuery.From.Id, update.CallbackQuery.Message.Chat.Id)
+				DB.ConnectUser(update.CallbackQuery.From.Id, update.CallbackQuery.Message.GetChat().Id)
 				update.CallbackQuery.Answer(
 					bot,
 					&gotgbot.AnswerCallbackQueryOpts{Text: "Awesome I've Succesfully Connected You To This Group !", ShowAlert: true},
 				)
-				update.CallbackQuery.Message.Delete(bot)
+				update.CallbackQuery.Message.Delete(bot, &gotgbot.DeleteMessageOpts{})
 				return nil
 			}
 		}

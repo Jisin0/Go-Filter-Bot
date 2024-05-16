@@ -23,7 +23,9 @@ func Start(bot *gotgbot.Bot, update *ext.Context) error {
 			ReplyMarkup: gotgbot.InlineKeyboardMarkup{
 				InlineKeyboard: utils.BUTTONS["START"],
 			},
-			AllowSendingWithoutReply: true,
+			ReplyParameters: &gotgbot.ReplyParameters{
+				AllowSendingWithoutReply: true,
+			},
 		})
 	return nil
 }
@@ -39,8 +41,15 @@ func GetId(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	if update.ReplyToMessage != nil {
 		text += fmt.Sprintf("\nReplied to user : <code>%v</code>", update.ReplyToMessage.From.Id)
-		if update.ReplyToMessage.ForwardDate != 0 {
-			text += fmt.Sprintf("\nForwarded from : <code>%v</code>", update.ReplyToMessage.ForwardFromChat.Id)
+		if f := update.ReplyToMessage.ForwardOrigin; f.GetDate() != 0 {
+			if f.MergeMessageOrigin().Chat != nil {
+				text += fmt.Sprintf("\nForwarded from : <code>%v</code>", f.MergeMessageOrigin().Chat.Id)
+			} else if f.MergeMessageOrigin().SenderChat != nil {
+				text += fmt.Sprintf("\nForwarded from : <code>%v</code>", f.MergeMessageOrigin().SenderChat.Id)
+			} else if f.MergeMessageOrigin().SenderUser != nil {
+				text += fmt.Sprintf("\nForwarded from : <code>%v</code>", f.MergeMessageOrigin().SenderUser.Id)
+			}
+
 		}
 	}
 	text += fmt.Sprintf("\nUser id : <code>%v</code>", update.From.Id)
@@ -48,15 +57,15 @@ func GetId(bot *gotgbot.Bot, ctx *ext.Context) error {
 		text += fmt.Sprintf("\nChat id : <code>%v</code>", update.Chat.Id)
 	}
 
-	update.Reply(bot, text, &gotgbot.SendMessageOpts{ParseMode: "HTML", ReplyToMessageId: update.MessageId})
+	update.Reply(bot, text, &gotgbot.SendMessageOpts{ParseMode: "HTML", ReplyParameters: &gotgbot.ReplyParameters{MessageId: update.MessageId}})
 
 	return nil
 }
 
 func CbStats(bot *gotgbot.Bot, update *ext.Context) error {
 	update.CallbackQuery.Message.EditText(bot, DB.Stats(), &gotgbot.EditMessageTextOpts{
-		ChatId:      update.CallbackQuery.Message.Chat.Id,
-		MessageId:   update.CallbackQuery.Message.MessageId,
+		ChatId:      update.CallbackQuery.Message.GetChat().Id,
+		MessageId:   update.CallbackQuery.Message.GetMessageId(),
 		ParseMode:   "HTML",
 		ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: utils.BUTTONS["STATS"]},
 	})
@@ -81,11 +90,13 @@ func CbEdit(bot *gotgbot.Bot, update *ext.Context) error {
 		markup = [][]gotgbot.InlineKeyboardButton{{{Text: "⤝ Bᴀᴄᴋ", CallbackData: "edit(HELP)"}}}
 	}
 	options := gotgbot.EditMessageTextOpts{
-		ChatId:                update.CallbackQuery.Message.Chat.Id,
-		MessageId:             update.CallbackQuery.Message.MessageId,
-		ParseMode:             "HTML",
-		DisableWebPagePreview: true,
-		ReplyMarkup:           gotgbot.InlineKeyboardMarkup{InlineKeyboard: markup},
+		ChatId:    update.CallbackQuery.Message.GetChat().Id,
+		MessageId: update.CallbackQuery.Message.GetMessageId(),
+		ParseMode: "HTML",
+		LinkPreviewOptions: &gotgbot.LinkPreviewOptions{
+			IsDisabled: true,
+		},
+		ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: markup},
 	}
 	var text string
 	if key == "START" {

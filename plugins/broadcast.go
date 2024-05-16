@@ -14,7 +14,7 @@ import (
 func Broadcast(bot *gotgbot.Bot, ctx *ext.Context) error {
 	//Function to handle /broadcast command
 	if !IsAdmin(ctx.Message.From.Id) {
-		ctx.Message.Reply(bot, "<b>Sorry Thats An Admin Only Command :(</b>", &gotgbot.SendMessageOpts{ParseMode: "HTML", ReplyToMessageId: ctx.Message.MessageId})
+		ctx.Message.Reply(bot, "<b>Sorry Thats An Admin Only Command :(</b>", &gotgbot.SendMessageOpts{ParseMode: "HTML", ReplyParameters: &gotgbot.ReplyParameters{MessageId: ctx.Message.MessageId}})
 		return nil
 	}
 
@@ -83,7 +83,7 @@ func Broadcast(bot *gotgbot.Bot, ctx *ext.Context) error {
 			_, err := msg.Copy(
 				bot,
 				id,
-				&gotgbot.CopyMessageOpts{Caption: caption, ParseMode: "HTML", ReplyMarkup: markup},
+				&gotgbot.CopyMessageOpts{Caption: &caption, ParseMode: "HTML", ReplyMarkup: markup},
 			)
 			if err != nil {
 				failed += 1
@@ -129,7 +129,7 @@ Total   : %v
 func ConCast(bot *gotgbot.Bot, ctx *ext.Context) error {
 	//Function to handle the /concast command
 	if !IsAdmin(ctx.Message.From.Id) {
-		ctx.Message.Reply(bot, "<b>Sorry Thats An Owner Only Command :(</b>", &gotgbot.SendMessageOpts{ParseMode: "HTML", ReplyToMessageId: ctx.Message.MessageId})
+		ctx.Message.Reply(bot, "<b>Sorry Thats An Owner Only Command :(</b>", &gotgbot.SendMessageOpts{ParseMode: "HTML", ReplyParameters: &gotgbot.ReplyParameters{MessageId: ctx.Message.MessageId}})
 		return nil
 	}
 
@@ -197,7 +197,7 @@ func ConCast(bot *gotgbot.Bot, ctx *ext.Context) error {
 			_, err := msg.Copy(
 				bot,
 				id,
-				&gotgbot.CopyMessageOpts{Caption: caption, ParseMode: "HTML", ReplyMarkup: markup},
+				&gotgbot.CopyMessageOpts{Caption: &caption, ParseMode: "HTML", ReplyMarkup: markup},
 			)
 			if err != nil {
 				failed += 1
