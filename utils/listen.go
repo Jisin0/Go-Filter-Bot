@@ -33,17 +33,17 @@ type Listeners struct {
 // Checks if update matches any saved listen filters
 func RunListening(bot *gotgbot.Bot, update *ext.Context) error {
 	for i, u := range Listening {
-		if u.Filter(update.Message) {
-			// Delete handler from slice
-			Listening[i] = Listening[len(Listening)-1] // Copy last element to index i.
-			Listening[len(Listening)-1] = Listeners{}  // Erase last element (write zero value).
-			Listening = Listening[:len(Listening)-1]   // Completely Remove That Last Value
-
-			// Send message to channel
-			u.Channel <- update.Message
-
-			return nil
+		if !u.Filter(update.Message) {
+			continue
 		}
+
+		// Delete handler from slice
+		Listening[i] = Listening[len(Listening)-1] // Copy last element to index i.
+		Listening[len(Listening)-1] = Listeners{}  // Erase last element (write zero value).
+		Listening = Listening[:len(Listening)-1]   // Completely Remove That Last Value
+
+		// Send message to channel
+		u.Channel <- update.Message
 	}
 
 	if update.Message.ForwardOrigin != nil && update.Message.ForwardOrigin.MergeMessageOrigin().Chat != nil && update.Message.Chat.Type == gotgbot.ChatTypePrivate {
