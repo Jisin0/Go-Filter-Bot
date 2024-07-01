@@ -42,15 +42,16 @@ func MFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		message = update.Caption
 	}
 
-	if chatType == gotgbot.ChatTypePrivate {
+	switch chatType {
+	case gotgbot.ChatTypePrivate:
 		var ok bool
 		chatID, ok = DB.GetConnection(update.Chat.Id)
 		if !ok {
 			return nil
 		}
-	} else if chatType == gotgbot.ChatTypeSupergroup || chatType == gotgbot.ChatTypeGroup {
+	case gotgbot.ChatTypeSupergroup, gotgbot.ChatTypeGroup:
 		chatID = update.Chat.Id
-	} else {
+	default:
 		return nil
 	}
 
@@ -160,24 +161,25 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		mediaType string
 	)
 
-	if update.ReplyToMessage != nil {
-		if update.ReplyToMessage.Document != nil {
-			fileId = update.ReplyToMessage.Document.FileId
+	if msg := update.ReplyToMessage; msg != nil {
+		switch {
+		case msg.Document != nil:
+			fileId = msg.Document.FileId
 			mediaType = "document"
-		} else if update.ReplyToMessage.Video != nil {
-			fileId = update.ReplyToMessage.Video.FileId
+		case msg.Video != nil:
+			fileId = msg.Video.FileId
 			mediaType = "video"
-		} else if update.ReplyToMessage.Audio != nil {
-			fileId = update.ReplyToMessage.Audio.FileId
+		case msg.Audio != nil:
+			fileId = msg.Audio.FileId
 			mediaType = "audio"
-		} else if update.ReplyToMessage.Sticker != nil {
-			fileId = update.ReplyToMessage.Sticker.FileId
+		case msg.Sticker != nil:
+			fileId = msg.Sticker.FileId
 			mediaType = "sticker"
-		} else if update.ReplyToMessage.Animation != nil {
-			fileId = update.ReplyToMessage.Animation.FileId
+		case msg.Animation != nil:
+			fileId = msg.Animation.FileId
 			mediaType = "animation"
-		} else if update.ReplyToMessage.Photo != nil {
-			fileId = update.ReplyToMessage.Photo[len(update.ReplyToMessage.Photo)-1].FileId
+		case msg.Photo != nil:
+			fileId = msg.Photo[len(msg.Photo)-1].FileId
 			mediaType = "photo"
 		}
 	}
@@ -275,16 +277,17 @@ func StopMfilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		key    string
 	)
 
-	if len(split) < 2 && update.Chat.Type == gotgbot.ChatTypePrivate {
+	switch {
+	case len(split) < 2 && update.Chat.Type == gotgbot.ChatTypePrivate:
 		m := utils.Ask(bot, "Ok Now Send Me The Name OF The Filter You Would Like To Stop ...", ctx.EffectiveChat, ctx.EffectiveUser)
 		if m == nil {
 			return nil
 		}
 
 		key = m.Text
-	} else if len(split) < 2 {
+	case len(split) < 2:
 		update.Reply(bot, "Whoops looks like you forgot to mention a filter to stop !", &gotgbot.SendMessageOpts{})
-	} else {
+	default:
 		key = split[1]
 	}
 

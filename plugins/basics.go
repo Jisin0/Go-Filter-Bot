@@ -54,12 +54,13 @@ func GetId(bot *gotgbot.Bot, ctx *ext.Context) error {
 		text += fmt.Sprintf("\nReplied to user : <code>%v</code>", update.ReplyToMessage.From.Id)
 
 		if f := update.ReplyToMessage.ForwardOrigin; f.GetDate() != 0 {
-			if f.MergeMessageOrigin().Chat != nil {
-				text += fmt.Sprintf("\nForwarded from : <code>%v</code>", f.MergeMessageOrigin().Chat.Id)
-			} else if f.MergeMessageOrigin().SenderChat != nil {
-				text += fmt.Sprintf("\nForwarded from : <code>%v</code>", f.MergeMessageOrigin().SenderChat.Id)
-			} else if f.MergeMessageOrigin().SenderUser != nil {
-				text += fmt.Sprintf("\nForwarded from : <code>%v</code>", f.MergeMessageOrigin().SenderUser.Id)
+			switch m := f.MergeMessageOrigin(); {
+			case m.Chat != nil:
+				text += fmt.Sprintf("\nForwarded from : <code>%v</code>", m.Chat.Id)
+			case m.SenderChat != nil:
+				text += fmt.Sprintf("\nForwarded from : <code>%v</code>", m.SenderChat.Id)
+			case m.SenderUser != nil:
+				text += fmt.Sprintf("\nForwarded from : <code>%v</code>", m.SenderUser.Id)
 			}
 
 		}

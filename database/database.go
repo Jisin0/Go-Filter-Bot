@@ -117,7 +117,7 @@ func (db *Database) GetConnection(userID int64) (int64, bool) {
 	return val.(int64), ok
 }
 
-func (db *Database) ConnectUser(userID int64, chatID int64) {
+func (db *Database) ConnectUser(userID, chatID int64) {
 	var tf bool = true
 	_, err := db.Ucol.UpdateOne(context.TODO(), bson.D{{Key: "_id", Value: userID}}, bson.D{{Key: "$set", Value: bson.D{{Key: "connected", Value: chatID}}}}, &options.UpdateOptions{Upsert: &tf})
 	if err != nil {

@@ -57,7 +57,8 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 
 	var c int64
 
-	if chatType == gotgbot.ChatTypeSupergroup || chatType == gotgbot.ChatTypeGroup {
+	switch chatType {
+	case gotgbot.ChatTypeSupergroup, gotgbot.ChatTypeGroup:
 		if userId == 0 {
 			bot.SendMessage(
 				chatId,
@@ -131,7 +132,7 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 
 			return c, false
 		}
-	} else if chatType == gotgbot.ChatTypePrivate {
+	case gotgbot.ChatTypePrivate:
 		c, ok := DB.GetConnection(userId)
 		if !ok {
 			bot.SendMessage(
@@ -149,8 +150,9 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 
 		fmt.Println(c)
 		return c, true
-	} else {
+	default:
 		fmt.Println("Unknown ChatType ", chatType)
 		return c, false
+
 	}
 }
