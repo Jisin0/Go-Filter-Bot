@@ -125,7 +125,7 @@ func (db *Database) ConnectUser(userID int64, chatID int64) {
 	}
 }
 
-func (db *Database) SaveMfilter(data Filter) {
+func (db *Database) SaveMfilter(data *Filter) {
 	_, err := db.Mcol.InsertOne(context.TODO(), data)
 	if err != nil {
 		fmt.Printf("db.savemfilter: %v\n", err)
