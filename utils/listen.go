@@ -93,7 +93,7 @@ func listenRequestFilter(chat *gotgbot.Chat, user *gotgbot.User, msgID int64) fi
 //
 // bot - The bot that handles the conversation.
 // text - Content of the request message to be sent.
-// chat - The chat in which the converstion takes place
+// chat - The chat in which the conversion takes place
 // user - The user expected to answer
 func Ask(bot *gotgbot.Bot, text string, chat *gotgbot.Chat, user *gotgbot.User) *gotgbot.Message {
 	// initial msg which's id is later used as the pinpoint of the converation's start

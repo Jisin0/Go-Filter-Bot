@@ -25,9 +25,9 @@ func PrivateOrGroup(msg *gotgbot.Message) bool {
 	return msg.Chat.Type == gotgbot.ChatTypeSupergroup || msg.Chat.Type == gotgbot.ChatTypeGroup || msg.Chat.Type == gotgbot.ChatTypePrivate
 }
 
-func Chats(chatId []int64) filters.Message {
+func Chats(chatID []int64) filters.Message {
 	return func(msg *gotgbot.Message) bool {
-		for _, c := range chatId {
+		for _, c := range chatID {
 			if c == msg.Chat.Id {
 				return true
 			}
@@ -53,7 +53,7 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 	}
 
 	chatType := msg.GetChat().Type
-	chatId := msg.GetChat().Id
+	chatID := msg.GetChat().Id
 
 	var c int64
 
@@ -61,7 +61,7 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 	case gotgbot.ChatTypeSupergroup, gotgbot.ChatTypeGroup:
 		if userID == 0 {
 			bot.SendMessage(
-				chatId,
+				chatID,
 				"Sorry It Looks Like You Are Anonymous Please Connect From Pm And Use Me Or Turn Off Anonymous :(",
 				&gotgbot.SendMessageOpts{
 					ReplyParameters: &gotgbot.ReplyParameters{
@@ -73,7 +73,7 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 			return c, false
 		}
 
-		cachedAdmins, ok := CachedAdmins[chatId]
+		cachedAdmins, ok := CachedAdmins[chatID]
 		if !ok {
 			admins, e := msg.GetChat().GetAdministrators(bot, &gotgbot.GetChatAdministratorsOpts{})
 			if e != nil {
@@ -86,7 +86,7 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 				newAdmins = append(newAdmins, admin.GetUser().Id)
 			}
 
-			CachedAdmins[chatId] = newAdmins
+			CachedAdmins[chatID] = newAdmins
 
 			for _, admin := range newAdmins {
 				if userID == admin {
@@ -96,7 +96,7 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 
 			if ctx.CallbackQuery == nil {
 				bot.SendMessage(
-					chatId,
+					chatID,
 					"Who dis non-admin telling me what to do !",
 					&gotgbot.SendMessageOpts{
 						ReplyParameters: &gotgbot.ReplyParameters{
@@ -118,7 +118,7 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 
 			if ctx.CallbackQuery == nil {
 				bot.SendMessage(
-					chatId,
+					chatID,
 					"Hey You're Not An Admin, If You Are A New Admin Use The /updateadmins Command To Update Current List !",
 					&gotgbot.SendMessageOpts{
 						ReplyParameters: &gotgbot.ReplyParameters{
@@ -136,7 +136,7 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 		c, ok := DB.GetConnection(userID)
 		if !ok {
 			bot.SendMessage(
-				chatId,
+				chatID,
 				"Sorry You Have To Connect To A Chat To Use This Command Here :(",
 				&gotgbot.SendMessageOpts{
 					ReplyParameters: &gotgbot.ReplyParameters{

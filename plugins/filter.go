@@ -441,7 +441,7 @@ func parseQuotes(text string) []string {
 	}
 }
 
-func parseButtons(text string, uniqueID string, totalButtons [][]map[string]string) (string, [][]map[string]string, []string) {
+func parseButtons(text, uniqueID string, totalButtons [][]map[string]string) (string, [][]map[string]string, []string) {
 	var (
 		returnText = text
 		rowButtons []map[string]string

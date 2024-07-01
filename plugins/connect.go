@@ -80,7 +80,7 @@ func Connect(bot *gotgbot.Bot, update *ext.Context) error {
 						DB.ConnectUser(update.Message.From.Id, chatID)
 						_, err := update.Message.Reply(
 							bot,
-							"Awesome I've Succesfully Connected You To Your Group !",
+							"Awesome I've Successfully Connected You To Your Group !",
 							&gotgbot.SendMessageOpts{},
 						)
 						if err != nil {
@@ -140,7 +140,7 @@ func Connect(bot *gotgbot.Bot, update *ext.Context) error {
 						DB.ConnectUser(update.Message.From.Id, update.Message.Chat.Id)
 						_, err := update.Message.Reply(
 							bot,
-							"Awesome I've Succesfully Connected You To This Group !",
+							"Awesome I've Successfully Connected You To This Group !",
 							&gotgbot.SendMessageOpts{},
 						)
 						if err != nil {
@@ -188,7 +188,7 @@ func CbConnect(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 				update.Answer(
 					bot,
-					&gotgbot.AnswerCallbackQueryOpts{Text: "Awesome I've Succesfully Connected You To This Group !", ShowAlert: true},
+					&gotgbot.AnswerCallbackQueryOpts{Text: "Awesome I've Successfully Connected You To This Group !", ShowAlert: true},
 				)
 
 				update.Message.Delete(bot, &gotgbot.DeleteMessageOpts{})
