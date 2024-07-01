@@ -185,8 +185,8 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 	}
 
 	f := &database.Filter{
-		Id:        uniqueID,
-		ChatId:    c,
+		ID:        uniqueID,
+		ChatID:    c,
 		Text:      parse[0],
 		Content:   text,
 		FileID:    fileID,

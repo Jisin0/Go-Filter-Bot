@@ -40,16 +40,16 @@ func Chats(chatId []int64) filters.Message {
 //nolint:errcheck // too lazy
 func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 	var (
-		userId int64
+		userID int64
 		msg    gotgbot.MaybeInaccessibleMessage
 	)
 
 	if ctx.CallbackQuery != nil {
 		msg = ctx.CallbackQuery.Message
-		userId = ctx.CallbackQuery.From.Id
+		userID = ctx.CallbackQuery.From.Id
 	} else {
 		msg = ctx.Message
-		userId = msg.(*gotgbot.Message).From.Id
+		userID = msg.(*gotgbot.Message).From.Id
 	}
 
 	chatType := msg.GetChat().Type
@@ -59,7 +59,7 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 
 	switch chatType {
 	case gotgbot.ChatTypeSupergroup, gotgbot.ChatTypeGroup:
-		if userId == 0 {
+		if userID == 0 {
 			bot.SendMessage(
 				chatId,
 				"Sorry It Looks Like You Are Anonymous Please Connect From Pm And Use Me Or Turn Off Anonymous :(",
@@ -89,7 +89,7 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 			CachedAdmins[chatId] = newAdmins
 
 			for _, admin := range newAdmins {
-				if userId == admin {
+				if userID == admin {
 					return c, true
 				}
 			}
@@ -111,7 +111,7 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 			return c, false
 		} else {
 			for _, admin := range cachedAdmins {
-				if userId == admin {
+				if userID == admin {
 					return c, true
 				}
 			}
@@ -133,7 +133,7 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 			return c, false
 		}
 	case gotgbot.ChatTypePrivate:
-		c, ok := DB.GetConnection(userId)
+		c, ok := DB.GetConnection(userID)
 		if !ok {
 			bot.SendMessage(
 				chatId,

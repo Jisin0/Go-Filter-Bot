@@ -26,9 +26,9 @@ type ChatSettings struct {
 // A filter object stored in the database
 type Filter struct {
 	// Unique id of the filter
-	Id string `bson:"_id"`
+	ID string `bson:"_id"`
 	// Chat where the filter is in effect
-	ChatId int64 `bson:"group_id"`
+	ChatID int64 `bson:"group_id"`
 	// The key/text which is filtered
 	Text string `bson:"text"`
 	// The text content/caption saved

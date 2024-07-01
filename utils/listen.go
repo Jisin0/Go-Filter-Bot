@@ -82,10 +82,10 @@ func ListenMessage(ctx context.Context, filter filters.Message) (*gotgbot.Messag
 //
 // chat - chat the message was sent to.
 // user - user who is expected to reply.
-// msgId - id of the last message in the chat
-func listenRequestFilter(chat *gotgbot.Chat, user *gotgbot.User, msgId int64) filters.Message {
+// msgID - id of the last message in the chat
+func listenRequestFilter(chat *gotgbot.Chat, user *gotgbot.User, msgID int64) filters.Message {
 	return func(msg *gotgbot.Message) bool {
-		return user.Id == msg.From.Id && msgId < msg.MessageId && chat.Id == msg.Chat.Id
+		return user.Id == msg.From.Id && msgID < msg.MessageId && chat.Id == msg.Chat.Id
 	}
 }
 
