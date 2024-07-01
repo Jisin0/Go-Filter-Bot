@@ -28,45 +28,50 @@ var globalNumber int64 = 101
 
 var DB database.Database = database.NewDatabase()
 
+// Manual filter function
 func MFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
-	// Manual filter function
-
-	var chat_id int64
-	update := ctx.Message
-	message_id := update.MessageId
-	chat_type := update.Chat.Type
-	var message string = update.Text
+	var (
+		chatID    int64
+		update    = ctx.Message
+		messageID = update.MessageId
+		chatType  = update.Chat.Type
+		message   = update.Text
+	)
 
 	if update.Caption != "" {
 		message = update.Caption
 	}
 
-	if chat_type == "private" {
+	if chatType == "private" {
 		var ok bool
-		chat_id, ok = DB.GetConnection(update.Chat.Id)
+		chatID, ok = DB.GetConnection(update.Chat.Id)
 		if !ok {
 			return nil
 		}
-	} else if chat_type == "supergroup" || chat_type == "group" {
-		chat_id = update.Chat.Id
+	} else if chatType == "supergroup" || chatType == "group" {
+		chatID = update.Chat.Id
 	} else {
 		return nil
 	}
 
-	res, e := DB.GetMfilters(chat_id)
+	res, e := DB.GetMfilters(chatID)
 	if e != nil {
-		fmt.Println(e)
+		fmt.Printf("mfilter.getmfilters: %v\n", e)
 		return nil
 	} else {
 		// Trying to find a regex match
 		for res.Next(context.TODO()) {
 			var f database.Filter
+
 			res.Decode(&f)
+
 			text := `(?i)( |^|[^\w])` + f.Text + `( |$|[^\w])`
+
 			pattern := regexp.MustCompile(text)
+
 			m := pattern.FindStringSubmatch(message)
 			if len(m) > 0 {
-				sendFilter(f, bot, update, chat_id, message_id)
+				sendFilter(f, bot, update, chatID, messageID)
 			}
 		}
 	}
@@ -74,8 +79,10 @@ func MFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 	return nil
 }
 
+// Function to handle filter and gfilter commands
+//
+//nolint:errcheck
 func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
-	// Function to handle filter and gfilter commands
 	var c int64
 	update := ctx.Message
 
@@ -86,6 +93,7 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 				c = globalNumber
 			}
 		}
+
 		if c != globalNumber {
 			update.Reply(bot, "Thats an Admin-only Command :(", &gotgbot.SendMessageOpts{})
 			return nil
@@ -95,22 +103,23 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		var v bool
 		c, v = customfilters.Verify(bot, ctx)
 		if !v {
-
 			return nil
 		} else if c == 0 {
 			c = ctx.Message.Chat.Id
 		}
 	}
-	args := strings.SplitN(update.Text, " ", 3)
 
+	args := strings.SplitN(update.Text, " ", 3)
 	if len(args) < 2 && (update.ReplyToMessage == nil && len(args) < 3) {
 		update.Reply(
 			bot,
 			"Not Enough Parameters :(\n\nExample:- <code>/filter hi hello</code>",
 			&gotgbot.SendMessageOpts{ParseMode: "HTML"},
 		)
+
 		return nil
 	}
+
 	parse := parseQuotes(strings.SplitN(update.Text, " ", 2)[1])
 
 	e := DB.Mcol.FindOne(context.TODO(), bson.D{{Key: "group_id", Value: c}, {Key: "text", Value: parse[0]}})
@@ -124,10 +133,11 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		)
 		return nil
 	}
-	var text string
-	var button [][]map[string]string
 
-	text += parse[1]
+	var (
+		text   = parse[1]
+		button [][]map[string]string
+	)
 
 	if update.ReplyToMessage != nil {
 		text += update.ReplyToMessage.Text
@@ -145,8 +155,11 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 	text, button, alert := parseButtons(text, uniqueID, button)
 
 	// Finding media if any
-	var fileId string
-	var mediaType string
+	var (
+		fileId    string
+		mediaType string
+	)
+
 	if update.ReplyToMessage != nil {
 		if update.ReplyToMessage.Document != nil {
 			fileId = update.ReplyToMessage.Document.FileId
@@ -169,19 +182,6 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		}
 	}
 
-	// Saving acquired data
-	//	data := bson.D{
-	//		{Key: "_id", Value: uniqueID},
-	//		{Key: "group_id", Value: c},
-	//		{Key: "text", Value: parse[0]},
-	//		{Key: "content", Value: text},
-	//		{Key: "file", Value: fileId},
-	//		{Key: "button", Value: button},
-	//		{Key: "alert", Value: alert},
-	//		{Key: "length", Value: len(parse[0])},
-	//		{Key: "mediaType", Value: mediaType},
-	//	}
-
 	f := database.Filter{
 		Id:        uniqueID,
 		ChatId:    c,
@@ -193,6 +193,7 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		Length:    len(parse[0]),
 		MediaType: mediaType,
 	}
+
 	DB.SaveMfilter(f)
 
 	_, err := update.Reply(
@@ -210,11 +211,9 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 func CbStop(bot *gotgbot.Bot, ctx *ext.Context) error {
 	// Function to handle callbacks from confirm buttons when stopping a filter
 	update := ctx.CallbackQuery
-	var c int64
-	var v bool
-	c, v = customfilters.Verify(bot, ctx)
-	if !v {
 
+	c, v := customfilters.Verify(bot, ctx)
+	if !v {
 		return nil
 	} else if c == 0 {
 		c = update.Message.GetChat().Id
@@ -227,16 +226,18 @@ func CbStop(bot *gotgbot.Bot, ctx *ext.Context) error {
 		return nil
 	}
 
-	key := args[0]
-	ftype := args[1]
-	erase := args[2]
+	var (
+		key   = args[0]
+		ftype = args[1]
+		erase = args[2]
+	)
 
 	if ftype == "local" {
 		if erase == "y" {
 			DB.DeleteMfilter(c, key)
 			update.Message.EditText(bot, fmt.Sprintf("Manual Filter For <code>%v</code> Was Deleted Successfully !", key), &gotgbot.EditMessageTextOpts{ParseMode: "HTML"})
 		} else if erase == "n" {
-			// Unused till now, maybe might use it later
+			// Unused till now, might use it later
 			update.Message.EditText(bot, fmt.Sprintf(`Are You Sure You Want To Permanently Delete The Manual Filter For %v ?\nClick The "Yes I'm Sure" Button To Confirm `, key), &gotgbot.EditMessageTextOpts{ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "Ignore", CallbackData: "close"}, {Text: "Yes I'm Sure", CallbackData: fmt.Sprintf("stopf(%v|local|y)", key)}}}}, ParseMode: "HTML"})
 		}
 	} else if ftype == "global" {
@@ -247,27 +248,32 @@ func CbStop(bot *gotgbot.Bot, ctx *ext.Context) error {
 				return nil
 			}
 		}
+
 		DB.StopGfilter(c, key)
+
 		update.Message.EditText(bot, fmt.Sprintf("Global Filter For <code>%v</code> Has Been Stopped Successfully !", key), &gotgbot.EditMessageTextOpts{ParseMode: "HTML"})
 	}
 
 	return nil
 }
 
+// Function to handle the stop command
+//
+//nolint:errcheck // too many
 func StopMfilter(bot *gotgbot.Bot, ctx *ext.Context) error {
-	// Function to handle the stop command
-	var c int64
-	var v bool
-	c, v = customfilters.Verify(bot, ctx)
+	c, v := customfilters.Verify(bot, ctx)
 	if !v {
 
 		return nil
 	} else if c == 0 {
 		c = ctx.Message.Chat.Id
 	}
-	update := ctx.Message
-	split := strings.SplitN(update.Text, " ", 2)
-	var key string
+
+	var (
+		update = ctx.Message
+		split  = strings.SplitN(update.Text, " ", 2)
+		key    string
+	)
 
 	if len(split) < 2 && update.Chat.Type == "private" {
 		m := utils.Ask(bot, "Ok Now Send Me The Name OF The Filter You Would Like To Stop ...", ctx.EffectiveChat, ctx.EffectiveUser)
@@ -326,21 +332,28 @@ func StopMfilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 func AllMfilters(bot *gotgbot.Bot, ctx *ext.Context) error {
 	// Function to handle the /filters command
 	update := ctx.Message
-	var c int64 = update.Chat.Id
+	c := update.Chat.Id
 
 	if update.Chat.Type == "private" {
 		if i, k := DB.GetConnection(update.From.Id); k {
 			c = i
 		}
 	}
+
 	text := DB.StringMfilter(c)
 
-	update.Reply(bot, "Lɪsᴛ ᴏғ ғɪʟᴛᴇʀs ғᴏʀ ᴛʜɪs ᴄʜᴀᴛ :\n"+text, &gotgbot.SendMessageOpts{ParseMode: "HTML"})
+	_, err := update.Reply(bot, "Lɪsᴛ ᴏғ ғɪʟᴛᴇʀs ғᴏʀ ᴛʜɪs ᴄʜᴀᴛ :\n"+text, &gotgbot.SendMessageOpts{ParseMode: "HTML"})
+	if err != nil {
+		fmt.Printf("allmfilters: %v", err)
+	}
+
 	return nil
 }
 
+// Function to handle callbacks from alert button in saved filters
+//
+//nolint:errcheck // unnecessary
 func CbAlert(bot *gotgbot.Bot, ctx *ext.Context) error {
-	// Function to handle callbacks from alert button in saved filters
 	update := ctx.CallbackQuery
 
 	args := strings.Split(cbalertRegex.FindStringSubmatch(update.Data)[1], "|")
@@ -348,6 +361,7 @@ func CbAlert(bot *gotgbot.Bot, ctx *ext.Context) error {
 		update.Answer(bot, &gotgbot.AnswerCallbackQueryOpts{Text: "Bad Request :(", ShowAlert: true})
 	} else {
 		uniqueId := args[0]
+
 		index, err := strconv.ParseInt(args[1], 0, 64)
 		if err != nil {
 			update.Answer(bot, &gotgbot.AnswerCallbackQueryOpts{Text: "Bad Request :(", ShowAlert: true})
@@ -362,13 +376,17 @@ func CbAlert(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 func buttonToMap(btn [][]gotgbot.InlineKeyboardButton) [][]map[string]string {
 	// Convert a button into a map
-	var totalButtons [][]map[string]string
-	var rowButtons []map[string]string
+	var (
+		totalButtons [][]map[string]string
+		rowButtons   []map[string]string
+	)
 
 	for _, i := range btn {
 		rowButtons = []map[string]string{}
+
 		for _, j := range i {
 			b := map[string]string{"Text": j.Text}
+
 			if j.CallbackData != "" {
 				b["CallbackData"] = j.CallbackData
 			} else if j.Url != "" {
@@ -387,16 +405,20 @@ func buttonToMap(btn [][]gotgbot.InlineKeyboardButton) [][]map[string]string {
 func mapToButton(data [][]map[string]string) [][]gotgbot.InlineKeyboardButton {
 	// Convert a map back into button
 	var totalButtons [][]gotgbot.InlineKeyboardButton
+
 	for _, i := range data {
 		var rowButtons []gotgbot.InlineKeyboardButton
+
 		for _, b := range i {
 			text := b["Text"]
+
 			if u, k := b["Url"]; k {
 				rowButtons = append(rowButtons, gotgbot.InlineKeyboardButton{Text: text, Url: u})
 			} else if c, k := b["CallbackData"]; k {
 				rowButtons = append(rowButtons, gotgbot.InlineKeyboardButton{Text: text, CallbackData: c})
 			}
 		}
+
 		totalButtons = append(totalButtons, rowButtons)
 	}
 
@@ -414,9 +436,11 @@ func parseQuotes(text string) []string {
 }
 
 func parseButtons(text string, uniqueId string, totalButtons [][]map[string]string) (string, [][]map[string]string, []string) {
-	var returnText string = text
-	var rowButtons []map[string]string
-	var alert []string
+	var (
+		returnText = text
+		rowButtons []map[string]string
+		alert      []string
+	)
 
 	for _, rows := range strings.Split(text, "\n") {
 		for _, m := range buttonRegex.FindAllStringSubmatch(rows, 5) {
@@ -433,51 +457,54 @@ func parseButtons(text string, uniqueId string, totalButtons [][]map[string]stri
 
 			returnText = strings.Replace(returnText, m[0], "", 1)
 		}
+
 		if len(rowButtons) > 0 {
 			totalButtons = append(totalButtons, rowButtons)
 		}
+
 		rowButtons = []map[string]string{}
 	}
 
 	return strings.Trim(returnText, " "), totalButtons, alert
 }
 
-func sendFilter(f database.Filter, bot *gotgbot.Bot, update *gotgbot.Message, chat_id int64, message_id int64) {
+func sendFilter(f database.Filter, bot *gotgbot.Bot, update *gotgbot.Message, chatID int64, messageID int64) {
 	// A function to send a filter if the regex matches
 	// I just made this func bcuz i'd have to duplicate it for mfilter and gfilter
 
 	// Find buttons saved for the filter and convert it from map
-	var buttons [][]gotgbot.InlineKeyboardButton = mapToButton(f.Markup)
-
-	markup := gotgbot.InlineKeyboardMarkup{InlineKeyboard: buttons}
-
-	content := f.Content
+	var (
+		buttons = mapToButton(f.Markup)
+		markup  = gotgbot.InlineKeyboardMarkup{InlineKeyboard: buttons}
+		content = f.Content
+		err     error
+	)
 
 	mediaType := f.MediaType
-	var err error = nil
 	if mediaType != "" {
 		fileId := f.FileID
 
 		switch mediaType {
 		case "document":
-			_, err = bot.SendDocument(chat_id, fileId, &gotgbot.SendDocumentOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: message_id}, ReplyMarkup: markup, ParseMode: "HTML"})
+			_, err = bot.SendDocument(chatID, fileId, &gotgbot.SendDocumentOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: "HTML"})
 		case "sticker":
-			_, err = bot.SendSticker(chat_id, fileId, &gotgbot.SendStickerOpts{ReplyParameters: &gotgbot.ReplyParameters{MessageId: message_id}, ReplyMarkup: markup})
+			_, err = bot.SendSticker(chatID, fileId, &gotgbot.SendStickerOpts{ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup})
 		case "video":
-			_, err = bot.SendVideo(chat_id, fileId, &gotgbot.SendVideoOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: message_id}, ReplyMarkup: markup, ParseMode: "HTML"})
+			_, err = bot.SendVideo(chatID, fileId, &gotgbot.SendVideoOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: "HTML"})
 		case "photo":
-			_, err = bot.SendPhoto(chat_id, fileId, &gotgbot.SendPhotoOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: message_id}, ReplyMarkup: markup, ParseMode: "HTML"})
+			_, err = bot.SendPhoto(chatID, fileId, &gotgbot.SendPhotoOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: "HTML"})
 		case "audio":
-			_, err = bot.SendAudio(chat_id, fileId, &gotgbot.SendAudioOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: message_id}, ReplyMarkup: markup, ParseMode: "HTML"})
+			_, err = bot.SendAudio(chatID, fileId, &gotgbot.SendAudioOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: "HTML"})
 		case "animation":
-			_, err = bot.SendAnimation(chat_id, fileId, &gotgbot.SendAnimationOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: message_id}, ReplyMarkup: markup, ParseMode: "HTML"})
+			_, err = bot.SendAnimation(chatID, fileId, &gotgbot.SendAnimationOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: "HTML"})
 		default:
-			fmt.Println("Unknown media type" + mediaType)
+			fmt.Println("Unknown media type " + mediaType)
 
 		}
 	} else {
-		_, err = update.Reply(bot, content, &gotgbot.SendMessageOpts{ReplyParameters: &gotgbot.ReplyParameters{MessageId: message_id}, ReplyMarkup: markup, ParseMode: "HTML"})
+		_, err = update.Reply(bot, content, &gotgbot.SendMessageOpts{ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: "HTML"})
 	}
+
 	if err != nil {
 		fmt.Println(err)
 		fmt.Println(f)
