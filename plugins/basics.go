@@ -20,7 +20,7 @@ func Start(bot *gotgbot.Bot, update *ext.Context) error {
 		update.Message.Chat.Id,
 		fmt.Sprintf(utils.TEXT["START"], update.Message.From.FirstName, bot.FirstName),
 		&gotgbot.SendMessageOpts{
-			ParseMode: "HTML",
+			ParseMode: gotgbot.ParseModeHTML,
 			ReplyMarkup: gotgbot.InlineKeyboardMarkup{
 				InlineKeyboard: utils.BUTTONS["START"],
 			},
@@ -36,7 +36,7 @@ func Start(bot *gotgbot.Bot, update *ext.Context) error {
 }
 
 func Stats(bot *gotgbot.Bot, update *ext.Context) error {
-	_, err := update.EffectiveMessage.Reply(bot, DB.Stats(), &gotgbot.SendMessageOpts{ParseMode: "HTML"})
+	_, err := update.EffectiveMessage.Reply(bot, DB.Stats(), &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML})
 	if err != nil {
 		fmt.Printf("stats: %v\n", err)
 	}
@@ -67,11 +67,11 @@ func GetId(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	text += fmt.Sprintf("\nUser id : <code>%v</code>", update.From.Id)
 
-	if update.Chat.Type != "private" {
+	if update.Chat.Type != gotgbot.ChatTypePrivate {
 		text += fmt.Sprintf("\nChat id : <code>%v</code>", update.Chat.Id)
 	}
 
-	_, err := update.Reply(bot, text, &gotgbot.SendMessageOpts{ParseMode: "HTML", ReplyParameters: &gotgbot.ReplyParameters{MessageId: update.MessageId}})
+	_, err := update.Reply(bot, text, &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyParameters: &gotgbot.ReplyParameters{MessageId: update.MessageId}})
 	if err != nil {
 		fmt.Printf("getid: %v\n", err)
 	}
@@ -83,7 +83,7 @@ func CbStats(bot *gotgbot.Bot, update *ext.Context) error {
 	_, _, err := update.CallbackQuery.Message.EditText(bot, DB.Stats(), &gotgbot.EditMessageTextOpts{
 		ChatId:      update.CallbackQuery.Message.GetChat().Id,
 		MessageId:   update.CallbackQuery.Message.GetMessageId(),
-		ParseMode:   "HTML",
+		ParseMode:   gotgbot.ParseModeHTML,
 		ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: utils.BUTTONS["STATS"]},
 	})
 
@@ -114,7 +114,7 @@ func CbEdit(bot *gotgbot.Bot, update *ext.Context) error {
 	options := gotgbot.EditMessageTextOpts{
 		ChatId:    update.CallbackQuery.Message.GetChat().Id,
 		MessageId: update.CallbackQuery.Message.GetMessageId(),
-		ParseMode: "HTML",
+		ParseMode: gotgbot.ParseModeHTML,
 		LinkPreviewOptions: &gotgbot.LinkPreviewOptions{
 			IsDisabled: true,
 		},
@@ -141,7 +141,7 @@ func CbEdit(bot *gotgbot.Bot, update *ext.Context) error {
 }
 
 func About(b *gotgbot.Bot, update *ext.Context) error {
-	_, err := update.Message.Reply(b, utils.TEXT["ABOUT"], &gotgbot.SendMessageOpts{ParseMode: "HTML", ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: utils.BUTTONS["ABOUT"]}})
+	_, err := update.Message.Reply(b, utils.TEXT["ABOUT"], &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: utils.BUTTONS["ABOUT"]}})
 	if err != nil {
 		fmt.Printf("about: %v\n", err)
 	}
@@ -150,7 +150,7 @@ func About(b *gotgbot.Bot, update *ext.Context) error {
 }
 
 func Help(b *gotgbot.Bot, update *ext.Context) error {
-	_, err := update.Message.Reply(b, utils.TEXT["HELP"], &gotgbot.SendMessageOpts{ParseMode: "HTML", ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: utils.BUTTONS["HELP"]}})
+	_, err := update.Message.Reply(b, utils.TEXT["HELP"], &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: utils.BUTTONS["HELP"]}})
 	if err != nil {
 		fmt.Printf("help: %v\n", err)
 	}

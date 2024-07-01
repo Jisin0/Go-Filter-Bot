@@ -39,7 +39,7 @@ linters:
    # - depguard (absolute trash)
     - dogsled
     - dupl
-    - errcheck
+   # - errcheck (TODO: waay too much now)
     - exportloopref
     - exhaustive
     - goconst

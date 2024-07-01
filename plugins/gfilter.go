@@ -27,13 +27,13 @@ func GFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	chatType := update.Chat.Type
 	switch chatType {
-	case "private":
+	case gotgbot.ChatTypePrivate:
 		var ok bool
 		chatID, ok = DB.GetConnection(update.From.Id)
 		if !ok {
 			return nil
 		}
-	case "supergroup", "group":
+	case gotgbot.ChatTypeSupergroup, gotgbot.ChatTypeGroup:
 		chatID = update.Chat.Id
 	default:
 		return nil
@@ -108,7 +108,7 @@ func StartGlobal(bot *gotgbot.Bot, ctx *ext.Context) error {
 			for _, k := range DB.GetCachedSetting(c).Stopped {
 				if k == key {
 					DB.StartGfilter(c, key)
-					update.Reply(bot, fmt.Sprintf("Restarted Global Filter For <i>%v</i> Successfully !", key), &gotgbot.SendMessageOpts{ParseMode: "HTML"})
+					update.Reply(bot, fmt.Sprintf("Restarted Global Filter For <i>%v</i> Successfully !", key), &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML})
 
 					return nil
 				}
@@ -125,7 +125,7 @@ func Gfilters(bot *gotgbot.Bot, ctx *ext.Context) error {
 	// Function to handle /gfilters function
 	text := DB.StringMfilter(globalNumber)
 
-	_, err := ctx.Message.Reply(bot, "Aʟʟ ғɪʟᴛᴇʀs sᴀᴠᴇᴅ ғᴏʀ ɢʟᴏʙᴀʟ ᴜsᴀɢᴇ :\n"+text, &gotgbot.SendMessageOpts{ParseMode: "HTML"})
+	_, err := ctx.Message.Reply(bot, "Aʟʟ ғɪʟᴛᴇʀs sᴀᴠᴇᴅ ғᴏʀ ɢʟᴏʙᴀʟ ᴜsᴀɢᴇ :\n"+text, &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML})
 	if err != nil {
 		fmt.Printf("gfilters: %v\n", err)
 	}

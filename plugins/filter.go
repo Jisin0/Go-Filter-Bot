@@ -42,13 +42,13 @@ func MFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		message = update.Caption
 	}
 
-	if chatType == "private" {
+	if chatType == gotgbot.ChatTypePrivate {
 		var ok bool
 		chatID, ok = DB.GetConnection(update.Chat.Id)
 		if !ok {
 			return nil
 		}
-	} else if chatType == "supergroup" || chatType == "group" {
+	} else if chatType == gotgbot.ChatTypeSupergroup || chatType == gotgbot.ChatTypeGroup {
 		chatID = update.Chat.Id
 	} else {
 		return nil
@@ -114,7 +114,7 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		update.Reply(
 			bot,
 			"Not Enough Parameters :(\n\nExample:- <code>/filter hi hello</code>",
-			&gotgbot.SendMessageOpts{ParseMode: "HTML"},
+			&gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML},
 		)
 
 		return nil
@@ -127,7 +127,7 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		update.Reply(
 			bot,
 			fmt.Sprintf("It Looks Like Another Filter For <code>%v</code> Has Already Been Saved In This Chat, If You Want To Stop It First Use The Button Below", parse[0]),
-			&gotgbot.SendMessageOpts{ParseMode: "HTML", ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{
+			&gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{
 				{{Text: "Stop Filter", CallbackData: fmt.Sprintf("stopf(%v|%v|y)", parse[0], "local")}},
 			}}},
 		)
@@ -199,7 +199,7 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 	_, err := update.Reply(
 		bot,
 		fmt.Sprintf("<i>Successfully Saved A Manual Filter For <code>%v</code> !</i>", parse[0]),
-		&gotgbot.SendMessageOpts{ParseMode: "HTML"},
+		&gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML},
 	)
 	if err != nil {
 		fmt.Println(err)
@@ -235,23 +235,23 @@ func CbStop(bot *gotgbot.Bot, ctx *ext.Context) error {
 	if ftype == "local" {
 		if erase == "y" {
 			DB.DeleteMfilter(c, key)
-			update.Message.EditText(bot, fmt.Sprintf("Manual Filter For <code>%v</code> Was Deleted Successfully !", key), &gotgbot.EditMessageTextOpts{ParseMode: "HTML"})
+			update.Message.EditText(bot, fmt.Sprintf("Manual Filter For <code>%v</code> Was Deleted Successfully !", key), &gotgbot.EditMessageTextOpts{ParseMode: gotgbot.ParseModeHTML})
 		} else if erase == "n" {
 			// Unused till now, might use it later
-			update.Message.EditText(bot, fmt.Sprintf(`Are You Sure You Want To Permanently Delete The Manual Filter For %v ?\nClick The "Yes I'm Sure" Button To Confirm `, key), &gotgbot.EditMessageTextOpts{ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "Ignore", CallbackData: "close"}, {Text: "Yes I'm Sure", CallbackData: fmt.Sprintf("stopf(%v|local|y)", key)}}}}, ParseMode: "HTML"})
+			update.Message.EditText(bot, fmt.Sprintf(`Are You Sure You Want To Permanently Delete The Manual Filter For %v ?\nClick The "Yes I'm Sure" Button To Confirm `, key), &gotgbot.EditMessageTextOpts{ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "Ignore", CallbackData: "close"}, {Text: "Yes I'm Sure", CallbackData: fmt.Sprintf("stopf(%v|local|y)", key)}}}}, ParseMode: gotgbot.ParseModeHTML})
 		}
 	} else if ftype == "global" {
 		for _, admin := range Admins {
 			if update.From.Id == admin {
 				DB.DeleteMfilter(globalNumber, key)
-				update.Message.EditText(bot, fmt.Sprintf("Global Filter For <code>%v</code> Was Deleted Successfully !", key), &gotgbot.EditMessageTextOpts{ParseMode: "HTML"})
+				update.Message.EditText(bot, fmt.Sprintf("Global Filter For <code>%v</code> Was Deleted Successfully !", key), &gotgbot.EditMessageTextOpts{ParseMode: gotgbot.ParseModeHTML})
 				return nil
 			}
 		}
 
 		DB.StopGfilter(c, key)
 
-		update.Message.EditText(bot, fmt.Sprintf("Global Filter For <code>%v</code> Has Been Stopped Successfully !", key), &gotgbot.EditMessageTextOpts{ParseMode: "HTML"})
+		update.Message.EditText(bot, fmt.Sprintf("Global Filter For <code>%v</code> Has Been Stopped Successfully !", key), &gotgbot.EditMessageTextOpts{ParseMode: gotgbot.ParseModeHTML})
 	}
 
 	return nil
@@ -275,7 +275,7 @@ func StopMfilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		key    string
 	)
 
-	if len(split) < 2 && update.Chat.Type == "private" {
+	if len(split) < 2 && update.Chat.Type == gotgbot.ChatTypePrivate {
 		m := utils.Ask(bot, "Ok Now Send Me The Name OF The Filter You Would Like To Stop ...", ctx.EffectiveChat, ctx.EffectiveUser)
 		if m == nil {
 			return nil
@@ -294,7 +294,7 @@ func StopMfilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	// If there isnt local or global
 	if !k && !ok {
-		update.Reply(bot, fmt.Sprintf("I Couldnt Find Any Filter For <code>%v</code> To Stop :(", key), &gotgbot.SendMessageOpts{ParseMode: "HTML"})
+		update.Reply(bot, fmt.Sprintf("I Couldnt Find Any Filter For <code>%v</code> To Stop :(", key), &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML})
 		return nil
 	}
 
@@ -302,28 +302,28 @@ func StopMfilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		// Both local and global
 		if k && ok {
 			markup := gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "Local", CallbackData: fmt.Sprintf("stopf(%v|local|y)", key)}, {Text: "Global", CallbackData: fmt.Sprintf("stopf(%v|global|y)", key)}}}}
-			_, err := update.Reply(bot, "Please Select If You Would Like To Stop The Manual Filter (which you saved) Or Global Filter (saved by owners) For <code>"+key+"</code>", &gotgbot.SendMessageOpts{ParseMode: "HTML", ReplyMarkup: markup})
+			_, err := update.Reply(bot, "Please Select If You Would Like To Stop The Manual Filter (which you saved) Or Global Filter (saved by owners) For <code>"+key+"</code>", &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: markup})
 			if err != nil {
 				fmt.Println(err)
 			}
 		} else if k {
 			// Only local
 			markup := gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "CONFIRM", CallbackData: fmt.Sprintf("stopf(%v|local|y)", key)}}}}
-			_, err := update.Reply(bot, "Please Press The Button Below To Confirm Deletion Of Manual Filter For <code>"+key+"</code>", &gotgbot.SendMessageOpts{ParseMode: "HTML", ReplyMarkup: markup})
+			_, err := update.Reply(bot, "Please Press The Button Below To Confirm Deletion Of Manual Filter For <code>"+key+"</code>", &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: markup})
 			if err != nil {
 				fmt.Println(err)
 			}
 		} else if ok {
 			// Only global
 			markup := gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "CONFIRM", CallbackData: fmt.Sprintf("stopf(%v|global|y)", key)}}}}
-			_, err := update.Reply(bot, "Please Press The Button Below To Stop Global Filter For <code>"+key+"</code>", &gotgbot.SendMessageOpts{ParseMode: "HTML", ReplyMarkup: markup})
+			_, err := update.Reply(bot, "Please Press The Button Below To Stop Global Filter For <code>"+key+"</code>", &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: markup})
 			if err != nil {
 				fmt.Println(err)
 			}
 		}
 	} else {
 		DB.DeleteMfilter(c, key)
-		update.Reply(bot, fmt.Sprintf("Manual Filter For <i>%v</i> Was Stopped Successfully !", key), &gotgbot.SendMessageOpts{ParseMode: "HTML"})
+		update.Reply(bot, fmt.Sprintf("Manual Filter For <i>%v</i> Was Stopped Successfully !", key), &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML})
 	}
 
 	return nil
@@ -334,7 +334,7 @@ func AllMfilters(bot *gotgbot.Bot, ctx *ext.Context) error {
 	update := ctx.Message
 	c := update.Chat.Id
 
-	if update.Chat.Type == "private" {
+	if update.Chat.Type == gotgbot.ChatTypePrivate {
 		if i, k := DB.GetConnection(update.From.Id); k {
 			c = i
 		}
@@ -342,7 +342,7 @@ func AllMfilters(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	text := DB.StringMfilter(c)
 
-	_, err := update.Reply(bot, "Lɪsᴛ ᴏғ ғɪʟᴛᴇʀs ғᴏʀ ᴛʜɪs ᴄʜᴀᴛ :\n"+text, &gotgbot.SendMessageOpts{ParseMode: "HTML"})
+	_, err := update.Reply(bot, "Lɪsᴛ ᴏғ ғɪʟᴛᴇʀs ғᴏʀ ᴛʜɪs ᴄʜᴀᴛ :\n"+text, &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML})
 	if err != nil {
 		fmt.Printf("allmfilters: %v\n", err)
 	}
@@ -486,23 +486,23 @@ func sendFilter(f database.Filter, bot *gotgbot.Bot, update *gotgbot.Message, ch
 
 		switch mediaType {
 		case "document":
-			_, err = bot.SendDocument(chatID, fileId, &gotgbot.SendDocumentOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: "HTML"})
+			_, err = bot.SendDocument(chatID, fileId, &gotgbot.SendDocumentOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
 		case "sticker":
 			_, err = bot.SendSticker(chatID, fileId, &gotgbot.SendStickerOpts{ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup})
 		case "video":
-			_, err = bot.SendVideo(chatID, fileId, &gotgbot.SendVideoOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: "HTML"})
+			_, err = bot.SendVideo(chatID, fileId, &gotgbot.SendVideoOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
 		case "photo":
-			_, err = bot.SendPhoto(chatID, fileId, &gotgbot.SendPhotoOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: "HTML"})
+			_, err = bot.SendPhoto(chatID, fileId, &gotgbot.SendPhotoOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
 		case "audio":
-			_, err = bot.SendAudio(chatID, fileId, &gotgbot.SendAudioOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: "HTML"})
+			_, err = bot.SendAudio(chatID, fileId, &gotgbot.SendAudioOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
 		case "animation":
-			_, err = bot.SendAnimation(chatID, fileId, &gotgbot.SendAnimationOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: "HTML"})
+			_, err = bot.SendAnimation(chatID, fileId, &gotgbot.SendAnimationOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
 		default:
 			fmt.Println("Unknown media type " + mediaType)
 
 		}
 	} else {
-		_, err = update.Reply(bot, content, &gotgbot.SendMessageOpts{ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: "HTML"})
+		_, err = update.Reply(bot, content, &gotgbot.SendMessageOpts{ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
 	}
 
 	if err != nil {

@@ -22,7 +22,7 @@ func Listen(m *gotgbot.Message) filters.Message {
 
 func PrivateOrGroup(msg *gotgbot.Message) bool {
 	// A Function To Filter Group & SuperGroup Message
-	return msg.Chat.Type == "supergroup" || msg.Chat.Type == "group" || msg.Chat.Type == "private"
+	return msg.Chat.Type == gotgbot.ChatTypeSupergroup || msg.Chat.Type == gotgbot.ChatTypeGroup || msg.Chat.Type == gotgbot.ChatTypePrivate
 }
 
 func Chats(chatId []int64) filters.Message {
@@ -57,7 +57,7 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 
 	var c int64
 
-	if chatType == "supergroup" || chatType == "group" {
+	if chatType == gotgbot.ChatTypeSupergroup || chatType == gotgbot.ChatTypeGroup {
 		if userId == 0 {
 			bot.SendMessage(
 				chatId,
@@ -131,7 +131,7 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 
 			return c, false
 		}
-	} else if chatType == "private" {
+	} else if chatType == gotgbot.ChatTypePrivate {
 		c, ok := DB.GetConnection(userId)
 		if !ok {
 			bot.SendMessage(

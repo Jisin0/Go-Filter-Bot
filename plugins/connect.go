@@ -28,7 +28,7 @@ func Connect(bot *gotgbot.Bot, update *ext.Context) error {
 
 		return nil
 	} else {
-		if update.Message.Chat.Type == "private" {
+		if update.Message.Chat.Type == gotgbot.ChatTypePrivate {
 			// Require a chat id if the command was used in a private chat
 			var (
 				args    = strings.Split(update.Message.Text, " ")
@@ -66,7 +66,7 @@ func Connect(bot *gotgbot.Bot, update *ext.Context) error {
 					_, err := update.Message.Reply(
 						bot,
 						fmt.Sprintf("Sorry Looks Like I Couldnt Find That Chat With Id <code>%v</code>. Make Sure I'm Admin There With Full Permissions :(", chatID),
-						&gotgbot.SendMessageOpts{ParseMode: "HTML"},
+						&gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML},
 					)
 					if err != nil {
 						fmt.Println(err)
@@ -103,7 +103,7 @@ func Connect(bot *gotgbot.Bot, update *ext.Context) error {
 				return nil
 
 			}
-		} else if update.Message.Chat.Type == "supergroup" || update.Message.Chat.Type == "group" {
+		} else if update.Message.Chat.Type == gotgbot.ChatTypeSupergroup || update.Message.Chat.Type == gotgbot.ChatTypeGroup {
 			// For groups or supergroups just connect
 			if update.Message.From.Id == 0 {
 				// Connect using button in case user is anonymous
@@ -126,7 +126,7 @@ func Connect(bot *gotgbot.Bot, update *ext.Context) error {
 					_, err := update.Message.Reply(
 						bot,
 						"Sorry I Couldn't access the admins list of this chat!\nPlease make sure I'm an admin here.",
-						&gotgbot.SendMessageOpts{ParseMode: "HTML"},
+						&gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML},
 					)
 					if err != nil {
 						fmt.Println(err)

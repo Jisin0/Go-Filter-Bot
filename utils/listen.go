@@ -46,9 +46,9 @@ func RunListening(bot *gotgbot.Bot, update *ext.Context) error {
 		}
 	}
 
-	if update.Message.ForwardOrigin != nil && update.Message.ForwardOrigin.MergeMessageOrigin().Chat != nil && update.Message.Chat.Type == "private" {
+	if update.Message.ForwardOrigin != nil && update.Message.ForwardOrigin.MergeMessageOrigin().Chat != nil && update.Message.Chat.Type == gotgbot.ChatTypePrivate {
 		text := fmt.Sprintf("This Message Was Forwarded From : <code>%v</code>", update.Message.ForwardOrigin.MergeMessageOrigin().Chat.Id)
-		update.Message.Reply(bot, text, &gotgbot.SendMessageOpts{ParseMode: "HTML"}) //nolint:errcheck // not a core feature
+		update.Message.Reply(bot, text, &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML}) //nolint:errcheck // not a core feature
 	}
 
 	return nil
@@ -97,7 +97,7 @@ func listenRequestFilter(chat *gotgbot.Chat, user *gotgbot.User, msgId int64) fi
 // user - The user expected to answer
 func Ask(bot *gotgbot.Bot, text string, chat *gotgbot.Chat, user *gotgbot.User) *gotgbot.Message {
 	// initial msg which's id is later used as the pinpoint of the converation's start
-	firstM, err := bot.SendMessage(chat.Id, text, &gotgbot.SendMessageOpts{ParseMode: "HTML"})
+	firstM, err := bot.SendMessage(chat.Id, text, &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML})
 	if err != nil {
 		fmt.Println("error while asking ", err)
 		return nil
@@ -110,7 +110,7 @@ func Ask(bot *gotgbot.Bot, text string, chat *gotgbot.Chat, user *gotgbot.User) 
 	// listen for matching messages
 	msg, err := ListenMessage(ctx, listenRequestFilter(chat, user, firstM.MessageId))
 	if err != nil {
-		bot.SendMessage(chat.Id, "<i>Request timed out ❗</i>", &gotgbot.SendMessageOpts{ParseMode: "HTML"})
+		bot.SendMessage(chat.Id, "<i>Request timed out ❗</i>", &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML})
 		return nil
 	}
 

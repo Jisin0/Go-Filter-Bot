@@ -15,7 +15,7 @@ import (
 func Broadcast(bot *gotgbot.Bot, ctx *ext.Context) error {
 	// Function to handle /broadcast command
 	if !isAdmin(ctx.Message.From.Id) {
-		ctx.Message.Reply(bot, "<b>Sorry Thats An Admin Only Command :(</b>", &gotgbot.SendMessageOpts{ParseMode: "HTML", ReplyParameters: &gotgbot.ReplyParameters{MessageId: ctx.Message.MessageId}})
+		ctx.Message.Reply(bot, "<b>Sorry Thats An Admin Only Command :(</b>", &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyParameters: &gotgbot.ReplyParameters{MessageId: ctx.Message.MessageId}})
 		return nil
 	}
 
@@ -63,7 +63,7 @@ func Broadcast(bot *gotgbot.Bot, ctx *ext.Context) error {
 		markup = &gotgbot.InlineKeyboardMarkup{InlineKeyboard: msg.ReplyMarkup.InlineKeyboard}
 	}
 
-	stat, err := update.Reply(bot, "<code>Starting broadcast ...</code>", &gotgbot.SendMessageOpts{ParseMode: "HTML"})
+	stat, err := update.Reply(bot, "<code>Starting broadcast ...</code>", &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML})
 	if err != nil {
 		fmt.Printf("broadcast.startmsg: %v\n", err)
 		return nil
@@ -103,7 +103,7 @@ func Broadcast(bot *gotgbot.Bot, ctx *ext.Context) error {
 			_, err := msg.Copy(
 				bot,
 				id,
-				&gotgbot.CopyMessageOpts{Caption: &caption, ParseMode: "HTML", ReplyMarkup: markup},
+				&gotgbot.CopyMessageOpts{Caption: &caption, ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: markup},
 			)
 			if err != nil {
 				failed += 1
@@ -125,7 +125,7 @@ Success : %v
 Failed  : %v
 Total   : %v
 `, sent, failed, total),
-				&gotgbot.EditMessageTextOpts{ParseMode: "HTML"},
+				&gotgbot.EditMessageTextOpts{ParseMode: gotgbot.ParseModeHTML},
 			)
 			if er != nil {
 				fmt.Printf("broadcast.progress.edit: %v\n", err)
@@ -142,7 +142,7 @@ Success : %v
 Failed  : %v
 Total   : %v
 `, sent, failed, total),
-		&gotgbot.EditMessageTextOpts{ParseMode: "HTML"},
+		&gotgbot.EditMessageTextOpts{ParseMode: gotgbot.ParseModeHTML},
 	)
 	if err != nil {
 		fmt.Printf("broadcast.progress.complete: %v\n", err)
