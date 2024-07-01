@@ -22,7 +22,6 @@ func Listen(m *gotgbot.Message) filters.Message {
 
 func PrivateOrGroup(msg *gotgbot.Message) bool {
 	// A Function To Filter Group & SuperGroup Message
-
 	return msg.Chat.Type == "supergroup" || msg.Chat.Type == "group" || msg.Chat.Type == "private"
 }
 
@@ -33,15 +32,18 @@ func Chats(chatId []int64) filters.Message {
 				return true
 			}
 		}
+
 		return false
 	}
 }
 
+//nolint:errcheck // too lazy
 func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
+	var (
+		userId int64
+		msg    gotgbot.MaybeInaccessibleMessage
+	)
 
-	var userId int64
-
-	var msg gotgbot.MaybeInaccessibleMessage
 	if ctx.CallbackQuery != nil {
 		msg = ctx.CallbackQuery.Message
 		userId = ctx.CallbackQuery.From.Id
@@ -54,6 +56,7 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 	chatId := msg.GetChat().Id
 
 	var c int64
+
 	if chatType == "supergroup" || chatType == "group" {
 		if userId == 0 {
 			bot.SendMessage(
@@ -65,15 +68,19 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 					},
 				},
 			)
+
 			return c, false
 		}
+
 		cachedAdmins, ok := CachedAdmins[chatId]
 		if !ok {
 			admins, e := msg.GetChat().GetAdministrators(bot, &gotgbot.GetChatAdministratorsOpts{})
-			var newAdmins []int64
 			if e != nil {
 				return c, false
 			}
+
+			var newAdmins []int64
+
 			for _, admin := range admins {
 				newAdmins = append(newAdmins, admin.GetUser().Id)
 			}
@@ -85,6 +92,7 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 					return c, true
 				}
 			}
+
 			if ctx.CallbackQuery == nil {
 				bot.SendMessage(
 					chatId,
@@ -98,6 +106,7 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 			} else {
 				ctx.CallbackQuery.Answer(bot, &gotgbot.AnswerCallbackQueryOpts{Text: "Who dis non-admin telling me what to do !", ShowAlert: true})
 			}
+
 			return c, false
 		} else {
 			for _, admin := range cachedAdmins {
@@ -134,8 +143,10 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 					},
 				},
 			)
+
 			return c, false
 		}
+
 		fmt.Println(c)
 		return c, true
 	} else {
