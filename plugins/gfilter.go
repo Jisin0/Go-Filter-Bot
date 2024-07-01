@@ -59,7 +59,7 @@ func GFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		m := pattern.FindStringSubmatch(update.Text)
 
 		if len(m) > 0 {
-			var isStopped bool = false
+			var isStopped = false
 
 			for _, k := range stopped {
 				if key == k {

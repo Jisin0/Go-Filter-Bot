@@ -27,8 +27,9 @@ linters-settings:
     range-loops: false
   mnd:
     ignored-numbers:
-      - '100'
+      - '3'
       - '2'
+      - '5'
 
 linters:
   disable-all: true

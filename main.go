@@ -15,6 +15,14 @@ import (
 	"github.com/PaulSonOfLars/gotgbot/v2/ext/handlers/filters/message"
 )
 
+const (
+	filterHandlerGroup   = 1 // handler group for filters
+	basicCommandsGroup   = 2 // handler group for basic commands
+	commandHandlerGroup  = 3 // handler group for other cammands
+	callbackHandlerGroup = 4 // handler group for callbacks
+	miscHandlerGroup     = 5 // handler group for everything else
+)
+
 func main() {
 	// Run a useless http server to get a healthy build on koyeb
 	go func() {
@@ -69,28 +77,31 @@ func main() {
 
 	updater := ext.NewUpdater(dispatcher, &ext.UpdaterOpts{})
 
-	// Add update handlers
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("start", plugins.Start), 1)
-	dispatcher.AddHandlerToGroup(handlers.NewCallback(callbackquery.Equal("stats"), plugins.CbStats), 3)
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("stats", plugins.Stats), 3)
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("filter", plugins.NewFilter), 1)
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("gfilter", plugins.NewFilter), 1)
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("filters", plugins.AllMfilters), 2)
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("stop", plugins.StopMfilter), 1)
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("connect", plugins.Connect), 3)
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("disconnect", plugins.Disconnect), 3)
-	dispatcher.AddHandlerToGroup(handlers.NewCallback(callbackquery.Prefix("cbconnect("), plugins.CbConnect), 2)
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("startglobal", plugins.StartGlobal), 2)
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("gfilters", plugins.Gfilters), 2)
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("broadcast", plugins.Broadcast), 3)
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("concast", plugins.Broadcast), 3)
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("id", plugins.GetID), 3)
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("about", plugins.About), 1)
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("help", plugins.Help), 1)
-	dispatcher.AddHandlerToGroup(handlers.NewCallback(callbackquery.Prefix("stopf("), plugins.CbStop), 3)
-	dispatcher.AddHandlerToGroup(handlers.NewCallback(callbackquery.Prefix("edit("), plugins.CbEdit), 3)
-	dispatcher.AddHandlerToGroup(handlers.NewMessage(customfilters.PrivateOrGroup, plugins.FilterHandler), 1)
-	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.All, utils.RunListening), 5)
+	dispatcher.AddHandlerToGroup(handlers.NewMessage(customfilters.PrivateOrGroup, plugins.FilterHandler), filterHandlerGroup)
+
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("start", plugins.Start), basicCommandsGroup)
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("about", plugins.About), basicCommandsGroup)
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("help", plugins.Help), basicCommandsGroup)
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("stats", plugins.Stats), basicCommandsGroup)
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("id", plugins.GetID), basicCommandsGroup)
+
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("filter", plugins.NewFilter), commandHandlerGroup)
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("gfilter", plugins.NewFilter), commandHandlerGroup)
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("filters", plugins.AllMfilters), commandHandlerGroup)
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("stop", plugins.StopMfilter), commandHandlerGroup)
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("connect", plugins.Connect), commandHandlerGroup)
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("disconnect", plugins.Disconnect), commandHandlerGroup)
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("startglobal", plugins.StartGlobal), commandHandlerGroup)
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("gfilters", plugins.Gfilters), commandHandlerGroup)
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("broadcast", plugins.Broadcast), commandHandlerGroup)
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("concast", plugins.Broadcast), commandHandlerGroup)
+
+	dispatcher.AddHandlerToGroup(handlers.NewCallback(callbackquery.Prefix("cbconnect("), plugins.CbConnect), callbackHandlerGroup)
+	dispatcher.AddHandlerToGroup(handlers.NewCallback(callbackquery.Prefix("stopf("), plugins.CbStop), callbackHandlerGroup)
+	dispatcher.AddHandlerToGroup(handlers.NewCallback(callbackquery.Prefix("edit("), plugins.CbEdit), callbackHandlerGroup)
+	dispatcher.AddHandlerToGroup(handlers.NewCallback(callbackquery.Equal("stats"), plugins.CbStats), callbackHandlerGroup)
+
+	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.All, utils.RunListening), miscHandlerGroup)
 
 	// Start receiving updates.
 	err = updater.StartPolling(b, &ext.PollingOpts{DropPendingUpdates: true})

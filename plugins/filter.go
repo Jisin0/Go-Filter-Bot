@@ -23,10 +23,20 @@ var parseRegex *regexp.Regexp = regexp.MustCompile(`^"([^"]+)"`)
 var cbstopRegex *regexp.Regexp = regexp.MustCompile(`stopf\((.+)\)`)
 var cbalertRegex *regexp.Regexp = regexp.MustCompile(`alert\((.+)\)`)
 
-// Number used as chat id for global filters. you could change it to anything you like but you will lose any existing gfilters
-var globalNumber int64 = 101
-
 var DB *database.Database = database.NewDatabase()
+
+const (
+	lenUniqueID        = 15  // length of unique id string for filters
+	globalNumber int64 = 101 // Number used as chat id for global filters. you could change it to anything you like but you will lose any existing gfilters
+	maxKeyLength       = 20  // maximum length for a keyword of a filter
+	maxButttons        = 5   // maximum number of buttons to scan for (should increase and test)
+
+	filterSplitCount = 3 // number of subtrings into which input of /filter command should be split
+)
+
+const (
+	cbStopParamCount = 3 // number of parameters required for cbstop
+)
 
 // Manual filter function
 func MFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
@@ -82,7 +92,7 @@ func MFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 // Function to handle filter and gfilter commands
 //
-//nolint:errcheck
+//nolint:errcheck // too many
 func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 	var c int64
 	update := ctx.Message
@@ -110,8 +120,8 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		}
 	}
 
-	args := strings.SplitN(update.Text, " ", 3)
-	if len(args) < 2 && (update.ReplyToMessage == nil && len(args) < 3) {
+	args := strings.SplitN(update.Text, " ", filterSplitCount)
+	if len(args) < 2 && (update.ReplyToMessage == nil && len(args) < filterSplitCount) {
 		update.Reply(
 			bot,
 			"Not Enough Parameters :(\n\nExample:- <code>/filter hi hello</code>",
@@ -150,8 +160,7 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		}
 	}
 
-	// Creating a random string with length 15
-	uniqueID := utils.RandString(15)
+	uniqueID := utils.RandString(lenUniqueID)
 
 	text, button, alert := parseButtons(text, uniqueID, button)
 
@@ -223,7 +232,7 @@ func CbStop(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	// Making sure the callback data is valid
 	args := strings.Split(cbstopRegex.FindStringSubmatch(update.Data)[1], "|")
-	if len(args) < 3 {
+	if len(args) < cbStopParamCount {
 		update.Answer(bot, &gotgbot.AnswerCallbackQueryOpts{Text: "Bad Button :(", ShowAlert: true})
 		return nil
 	}
@@ -301,7 +310,7 @@ func StopMfilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		return nil
 	}
 
-	if len(key) < 20 {
+	if len(key) < maxKeyLength {
 		// Both local and global
 		switch {
 		case k && ok:
@@ -449,7 +458,7 @@ func parseButtons(text, uniqueID string, totalButtons [][]map[string]string) (me
 	)
 
 	for _, rows := range strings.Split(text, "\n") {
-		for _, m := range buttonRegex.FindAllStringSubmatch(rows, 5) {
+		for _, m := range buttonRegex.FindAllStringSubmatch(rows, maxButttons) {
 			if len(m) < 4 {
 				continue
 			}

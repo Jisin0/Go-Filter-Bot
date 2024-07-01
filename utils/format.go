@@ -10,8 +10,6 @@ import (
 	"time"
 )
 
-var Dst []byte = make([]byte, 25)
-
 // Character set to generate a random string
 const charset = "abcdefghijklmnopqrstuvwxyz" +
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -24,6 +22,7 @@ func RandString(length int) string {
 	for i := range b {
 		b[i] = charset[seededRand.Intn(len(charset))]
 	}
+
 	return string(b)
 }
 
