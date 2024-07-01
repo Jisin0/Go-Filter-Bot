@@ -16,7 +16,6 @@ import (
 )
 
 func main() {
-
 	// Run a useless http server to get a healthy build on koyeb
 	go func() {
 		port := os.Getenv("PORT")
@@ -67,6 +66,7 @@ func main() {
 		},
 		MaxRoutines: ext.DefaultMaxRoutines,
 	})
+
 	updater := ext.NewUpdater(dispatcher, &ext.UpdaterOpts{})
 
 	// Add update handlers
@@ -90,7 +90,6 @@ func main() {
 	dispatcher.AddHandlerToGroup(handlers.NewCallback(callbackquery.Prefix("stopf("), plugins.CbStop), 3)
 	dispatcher.AddHandlerToGroup(handlers.NewCallback(callbackquery.Prefix("edit("), plugins.CbEdit), 3)
 	dispatcher.AddHandlerToGroup(handlers.NewMessage(customfilters.PrivateOrGroup, plugins.FilterHandler), 1)
-
 	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.All, utils.RunListening), 5)
 
 	// Start receiving updates.
@@ -98,6 +97,7 @@ func main() {
 	if err != nil {
 		panic("failed to start polling: " + err.Error())
 	}
+
 	fmt.Printf("@%s Started !\n", b.User.Username)
 
 	// Idle, to keep updates coming in, and avoid bot stopping.
