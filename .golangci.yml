@@ -1,0 +1,91 @@
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+  revive:
+    rules:
+      - name: unused-parameter
+        severity: warning
+        disabled: true
+  dupl:
+    threshold: 100
+  goconst:
+    min-len: 2
+    min-occurrences: 3
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - experimental
+      - opinionated
+      - performance
+      - style
+  govet:
+    shadow: true
+  nolintlint:
+    require-explanation: false
+    require-specific: true
+  prealloc:
+    range-loops: false
+  mnd:
+    ignored-numbers:
+      - '100'
+      - '2'
+
+linters:
+  disable-all: true
+  enable:
+    - bodyclose
+    - copyloopvar
+    - deadcode
+   # - depguard (absolute trash)
+    - dogsled
+    - dupl
+    - errcheck
+    - exportloopref
+    - exhaustive
+    - goconst
+    - gocritic
+    - gofmt
+    - goimports
+   # - gomnd (deprecated)
+    - mnd
+    - gocyclo
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - misspell
+    - nolintlint
+    - nakedret
+    - prealloc
+    - predeclared
+    - revive
+    - staticcheck
+    - structcheck
+    - stylecheck
+    - thelper
+    - tparallel
+    - typecheck
+    - unconvert
+    - unparam
+    - varcheck
+    - whitespace
+    - wsl
+
+issues:
+  exclude-rules:
+    # Disable linters that are annoying in tests.
+    - path: _test\.go
+      linters:
+        - gocritic
+        - gocyclo
+        - errcheck
+        - dupl
+        - gosec
+        - funlen
+        - goconst
+        - gocognit
+        - scopelint
+        - lll
+
+run:
+  issues-exit-code: 1
