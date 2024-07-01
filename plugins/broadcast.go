@@ -76,15 +76,15 @@ func Broadcast(bot *gotgbot.Bot, ctx *ext.Context) error {
 		cursor.Decode(&doc)
 
 		// Just in case, to prevent unwanted crashes
-		rawId, ok := doc["_id"]
+		rawID, ok := doc["_id"]
 		if !ok {
 			continue
 		}
 
-		if _, ok := rawId.(int32); ok {
-			id = int64(rawId.(int32))
+		if _, ok := rawID.(int32); ok {
+			id = int64(rawID.(int32))
 		} else {
-			id = rawId.(int64)
+			id = rawID.(int64)
 		}
 
 		if isText {

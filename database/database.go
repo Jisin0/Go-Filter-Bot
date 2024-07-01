@@ -60,7 +60,7 @@ func NewDatabase() *Database {
 
 	return &Database{
 		Client: client,
-		Db:     db,
+		DB:     db,
 		Ucol:   db.Collection("Users"),
 		Col:    db.Collection("Main"),
 		Mcol:   db.Collection("Manual_Filters"),
@@ -71,7 +71,7 @@ type Database struct {
 	// Mongo Client
 	Client *mongo.Client
 	// Database
-	Db *mongo.Database
+	DB *mongo.Database
 	// Users Collection
 	Ucol *mongo.Collection
 	// Main Collection
@@ -118,7 +118,7 @@ func (db *Database) GetConnection(userID int64) (int64, bool) {
 }
 
 func (db *Database) ConnectUser(userID, chatID int64) {
-	var tf bool = true
+	var tf = true
 	_, err := db.Ucol.UpdateOne(context.TODO(), bson.D{{Key: "_id", Value: userID}}, bson.D{{Key: "$set", Value: bson.D{{Key: "connected", Value: chatID}}}}, &options.UpdateOptions{Upsert: &tf})
 	if err != nil {
 		fmt.Printf("db.connectuser: %v\n", err)
@@ -185,7 +185,7 @@ func (db *Database) StringMfilter(chatID int64) string {
 }
 
 func (db *Database) StopGfilter(chatID int64, key string) {
-	var t bool = true
+	var t = true
 
 	_, err := db.Col.UpdateOne(context.TODO(), bson.D{{Key: "_id", Value: chatID}}, bson.D{{Key: "$append", Value: bson.D{{Key: "stopped", Value: key}}}}, &options.UpdateOptions{Upsert: &t})
 	if err != nil {
@@ -254,7 +254,6 @@ func (db *Database) GetCachedSetting(chatID int64) *ChatSettings {
 	} else {
 		return s
 	}
-
 }
 
 func (db *Database) StartGfilter(chatID int64, key string) {
@@ -270,7 +269,8 @@ func (db *Database) StartGfilter(chatID int64, key string) {
 	if err != nil {
 		fmt.Printf("db.startgfilter: %v", err)
 	}
-	// go db.RecacheSettings(chatID)
+
+	go db.RecacheSettings(chatID)
 }
 
 func (db *Database) GetAlert(uniqueID string, index int) string {

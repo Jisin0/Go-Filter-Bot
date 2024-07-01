@@ -441,7 +441,7 @@ func parseQuotes(text string) []string {
 	}
 }
 
-func parseButtons(text, uniqueID string, totalButtons [][]map[string]string) (string, [][]map[string]string, []string) {
+func parseButtons(text, uniqueID string, totalButtons [][]map[string]string) (messageText string, buttons [][]map[string]string, alertText []string) {
 	var (
 		returnText = text
 		rowButtons []map[string]string
@@ -474,7 +474,7 @@ func parseButtons(text, uniqueID string, totalButtons [][]map[string]string) (st
 	return strings.Trim(returnText, " "), totalButtons, alert
 }
 
-func sendFilter(f *database.Filter, bot *gotgbot.Bot, update *gotgbot.Message, chatID int64, messageID int64) {
+func sendFilter(f *database.Filter, bot *gotgbot.Bot, update *gotgbot.Message, chatID, messageID int64) {
 	// A function to send a filter if the regex matches
 	// I just made this func bcuz i'd have to duplicate it for mfilter and gfilter
 
