@@ -84,7 +84,7 @@ func main() {
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("gfilters", plugins.Gfilters), 2)
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("broadcast", plugins.Broadcast), 3)
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("concast", plugins.Broadcast), 3)
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("id", plugins.GetId), 3)
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("id", plugins.GetID), 3)
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("about", plugins.About), 1)
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("help", plugins.Help), 1)
 	dispatcher.AddHandlerToGroup(handlers.NewCallback(callbackquery.Prefix("stopf("), plugins.CbStop), 3)

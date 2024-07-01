@@ -157,29 +157,29 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	// Finding media if any
 	var (
-		fileId    string
+		fileID    string
 		mediaType string
 	)
 
 	if msg := update.ReplyToMessage; msg != nil {
 		switch {
 		case msg.Document != nil:
-			fileId = msg.Document.FileId
+			fileID = msg.Document.FileId
 			mediaType = "document"
 		case msg.Video != nil:
-			fileId = msg.Video.FileId
+			fileID = msg.Video.FileId
 			mediaType = "video"
 		case msg.Audio != nil:
-			fileId = msg.Audio.FileId
+			fileID = msg.Audio.FileId
 			mediaType = "audio"
 		case msg.Sticker != nil:
-			fileId = msg.Sticker.FileId
+			fileID = msg.Sticker.FileId
 			mediaType = "sticker"
 		case msg.Animation != nil:
-			fileId = msg.Animation.FileId
+			fileID = msg.Animation.FileId
 			mediaType = "animation"
 		case msg.Photo != nil:
-			fileId = msg.Photo[len(msg.Photo)-1].FileId
+			fileID = msg.Photo[len(msg.Photo)-1].FileId
 			mediaType = "photo"
 		}
 	}
@@ -189,7 +189,7 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		ChatId:    c,
 		Text:      parse[0],
 		Content:   text,
-		FileID:    fileId,
+		FileID:    fileID,
 		Markup:    button,
 		Alerts:    alert,
 		Length:    len(parse[0]),
@@ -363,13 +363,13 @@ func CbAlert(bot *gotgbot.Bot, ctx *ext.Context) error {
 	if len(args) < 2 {
 		update.Answer(bot, &gotgbot.AnswerCallbackQueryOpts{Text: "Bad Request :(", ShowAlert: true})
 	} else {
-		uniqueId := args[0]
+		uniqueID := args[0]
 
 		index, err := strconv.ParseInt(args[1], 0, 64)
 		if err != nil {
 			update.Answer(bot, &gotgbot.AnswerCallbackQueryOpts{Text: "Bad Request :(", ShowAlert: true})
 		} else {
-			text := DB.GetAlert(uniqueId, int(index))
+			text := DB.GetAlert(uniqueID, int(index))
 			update.Answer(bot, &gotgbot.AnswerCallbackQueryOpts{Text: text, ShowAlert: true})
 		}
 	}
@@ -438,7 +438,7 @@ func parseQuotes(text string) []string {
 	}
 }
 
-func parseButtons(text string, uniqueId string, totalButtons [][]map[string]string) (string, [][]map[string]string, []string) {
+func parseButtons(text string, uniqueID string, totalButtons [][]map[string]string) (string, [][]map[string]string, []string) {
 	var (
 		returnText = text
 		rowButtons []map[string]string
@@ -455,7 +455,7 @@ func parseButtons(text string, uniqueId string, totalButtons [][]map[string]stri
 				rowButtons = append(rowButtons, map[string]string{"Text": m[1], "Url": m[3]})
 			} else if m[2] == "alert" || m[2] == "buttonalert" {
 				alert = append(alert, m[3])
-				rowButtons = append(rowButtons, map[string]string{"Text": m[1], "CallbackData": fmt.Sprintf("alert(%v|%v)", uniqueId, len(alert)-1)})
+				rowButtons = append(rowButtons, map[string]string{"Text": m[1], "CallbackData": fmt.Sprintf("alert(%v|%v)", uniqueID, len(alert)-1)})
 			}
 
 			returnText = strings.Replace(returnText, m[0], "", 1)
@@ -485,21 +485,21 @@ func sendFilter(f database.Filter, bot *gotgbot.Bot, update *gotgbot.Message, ch
 
 	mediaType := f.MediaType
 	if mediaType != "" {
-		fileId := f.FileID
+		fileID := f.FileID
 
 		switch mediaType {
 		case "document":
-			_, err = bot.SendDocument(chatID, fileId, &gotgbot.SendDocumentOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
+			_, err = bot.SendDocument(chatID, fileID, &gotgbot.SendDocumentOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
 		case "sticker":
-			_, err = bot.SendSticker(chatID, fileId, &gotgbot.SendStickerOpts{ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup})
+			_, err = bot.SendSticker(chatID, fileID, &gotgbot.SendStickerOpts{ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup})
 		case "video":
-			_, err = bot.SendVideo(chatID, fileId, &gotgbot.SendVideoOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
+			_, err = bot.SendVideo(chatID, fileID, &gotgbot.SendVideoOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
 		case "photo":
-			_, err = bot.SendPhoto(chatID, fileId, &gotgbot.SendPhotoOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
+			_, err = bot.SendPhoto(chatID, fileID, &gotgbot.SendPhotoOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
 		case "audio":
-			_, err = bot.SendAudio(chatID, fileId, &gotgbot.SendAudioOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
+			_, err = bot.SendAudio(chatID, fileID, &gotgbot.SendAudioOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
 		case "animation":
-			_, err = bot.SendAnimation(chatID, fileId, &gotgbot.SendAnimationOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
+			_, err = bot.SendAnimation(chatID, fileID, &gotgbot.SendAnimationOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
 		default:
 			fmt.Println("Unknown media type " + mediaType)
 

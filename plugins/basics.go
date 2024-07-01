@@ -44,7 +44,7 @@ func Stats(bot *gotgbot.Bot, update *ext.Context) error {
 	return nil
 }
 
-func GetId(bot *gotgbot.Bot, ctx *ext.Context) error {
+func GetID(bot *gotgbot.Bot, ctx *ext.Context) error {
 	var (
 		text   string
 		update = ctx.Message
