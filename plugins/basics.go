@@ -29,7 +29,7 @@ func Start(bot *gotgbot.Bot, update *ext.Context) error {
 			},
 		})
 	if err != nil {
-		fmt.Printf("start: %v", err)
+		fmt.Printf("start: %v\n", err)
 	}
 
 	return nil
@@ -134,7 +134,7 @@ func CbEdit(bot *gotgbot.Bot, update *ext.Context) error {
 		&options,
 	)
 	if err != nil {
-		fmt.Printf("cbedit: %v", err)
+		fmt.Printf("cbedit: %v\n", err)
 	}
 
 	return nil
@@ -143,7 +143,7 @@ func CbEdit(bot *gotgbot.Bot, update *ext.Context) error {
 func About(b *gotgbot.Bot, update *ext.Context) error {
 	_, err := update.Message.Reply(b, utils.TEXT["ABOUT"], &gotgbot.SendMessageOpts{ParseMode: "HTML", ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: utils.BUTTONS["ABOUT"]}})
 	if err != nil {
-		fmt.Printf("about: %v", err)
+		fmt.Printf("about: %v\n", err)
 	}
 
 	return nil
@@ -152,7 +152,7 @@ func About(b *gotgbot.Bot, update *ext.Context) error {
 func Help(b *gotgbot.Bot, update *ext.Context) error {
 	_, err := update.Message.Reply(b, utils.TEXT["HELP"], &gotgbot.SendMessageOpts{ParseMode: "HTML", ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: utils.BUTTONS["HELP"]}})
 	if err != nil {
-		fmt.Printf("help: %v", err)
+		fmt.Printf("help: %v\n", err)
 	}
 
 	return nil

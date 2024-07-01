@@ -11,7 +11,7 @@ import (
 	"github.com/PaulSonOfLars/gotgbot/v2/ext/handlers/filters"
 )
 
-var DB database.Database = database.NewDatabase()
+var DB *database.Database = database.NewDatabase()
 var CachedAdmins map[int64][]int64 = map[int64][]int64{}
 
 func Listen(m *gotgbot.Message) filters.Message {

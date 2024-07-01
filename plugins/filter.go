@@ -26,7 +26,7 @@ var cbalertRegex *regexp.Regexp = regexp.MustCompile(`alert\((.+)\)`)
 // Number used as chat id for global filters. you could change it to anything you like but you will lose any existing gfilters
 var globalNumber int64 = 101
 
-var DB database.Database = database.NewDatabase()
+var DB *database.Database = database.NewDatabase()
 
 // Manual filter function
 func MFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
@@ -344,7 +344,7 @@ func AllMfilters(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	_, err := update.Reply(bot, "Lɪsᴛ ᴏғ ғɪʟᴛᴇʀs ғᴏʀ ᴛʜɪs ᴄʜᴀᴛ :\n"+text, &gotgbot.SendMessageOpts{ParseMode: "HTML"})
 	if err != nil {
-		fmt.Printf("allmfilters: %v", err)
+		fmt.Printf("allmfilters: %v\n", err)
 	}
 
 	return nil

@@ -127,7 +127,7 @@ func Gfilters(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	_, err := ctx.Message.Reply(bot, "Aʟʟ ғɪʟᴛᴇʀs sᴀᴠᴇᴅ ғᴏʀ ɢʟᴏʙᴀʟ ᴜsᴀɢᴇ :\n"+text, &gotgbot.SendMessageOpts{ParseMode: "HTML"})
 	if err != nil {
-		fmt.Printf("gfilters: %v", err)
+		fmt.Printf("gfilters: %v\n", err)
 	}
 
 	return nil
