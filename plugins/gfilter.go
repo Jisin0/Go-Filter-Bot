@@ -25,10 +25,10 @@ func GFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		messageID = update.MessageId
 	)
 
-	chatType := update.Chat.Type
-	switch chatType {
+	switch chatType := update.Chat.Type; chatType {
 	case gotgbot.ChatTypePrivate:
 		var ok bool
+
 		chatID, ok = DB.GetConnection(update.From.Id)
 		if !ok {
 			return nil
@@ -37,7 +37,6 @@ func GFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		chatID = update.Chat.Id
 	default:
 		return nil
-
 	}
 
 	res, e := DB.GetMfilters(globalNumber)
@@ -91,6 +90,7 @@ func StartGlobal(bot *gotgbot.Bot, ctx *ext.Context) error {
 	if !v {
 		return nil
 	}
+
 	if c == 0 {
 		c = ctx.Message.Chat.Id
 	}

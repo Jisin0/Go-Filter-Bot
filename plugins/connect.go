@@ -83,6 +83,7 @@ func Connect(bot *gotgbot.Bot, update *ext.Context) error {
 							"Awesome I've Successfully Connected You To Your Group !",
 							&gotgbot.SendMessageOpts{},
 						)
+
 						if err != nil {
 							fmt.Println(err)
 						}
@@ -101,7 +102,6 @@ func Connect(bot *gotgbot.Bot, update *ext.Context) error {
 				}
 
 				return nil
-
 			}
 		} else if update.Message.Chat.Type == gotgbot.ChatTypeSupergroup || update.Message.Chat.Type == gotgbot.ChatTypeGroup {
 			// For groups or supergroups just connect
@@ -143,6 +143,7 @@ func Connect(bot *gotgbot.Bot, update *ext.Context) error {
 							"Awesome I've Successfully Connected You To This Group !",
 							&gotgbot.SendMessageOpts{},
 						)
+
 						if err != nil {
 							fmt.Println(err)
 						}
@@ -232,5 +233,6 @@ func Disconnect(bot *gotgbot.Bot, update *ext.Context) error {
 			&gotgbot.SendMessageOpts{},
 		)
 	}
+
 	return nil
 }

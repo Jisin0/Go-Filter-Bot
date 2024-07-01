@@ -95,6 +95,7 @@ func Broadcast(bot *gotgbot.Bot, ctx *ext.Context) error {
 			)
 			if err != nil {
 				fmt.Printf("broadcast.sendmsg: %v\n", err)
+
 				failed += 1
 			} else {
 				sent += 1
@@ -157,5 +158,6 @@ func isAdmin(user int64) bool {
 			return true
 		}
 	}
+
 	return false
 }

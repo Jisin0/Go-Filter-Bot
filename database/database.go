@@ -100,13 +100,14 @@ func (db *Database) Stats() string {
 	chats, _ := db.Col.CountDocuments(context.TODO(), bson.M{})
 	mfilters, _ := db.Mcol.CountDocuments(context.TODO(), bson.M{})
 
-	return fmt.Sprintf("<u>Cᥙɾɾҽɳ𝜏 Ɗα𝜏αßαടҽ S𝜏α𝜏ട </u>:\n\nUsᴇʀs: %v\nMᴀɴᴜᴀʟ Fɪʟᴛᴇʀs: %v\nCᴜsᴛᴏᴍɪᴢᴇᴅ Cʜᴀᴛs: %v", users, mfilters, chats)
+	return fmt.Sprintf("<u>Cᴜɾɾҽɳ𝜏 Ɗα𝜏αßαടҽ S𝜏α𝜏ട </u>:\n\nUsᴇʀs: %v\nMᴀɴᴜᴀʟ Fɪʟᴛᴇʀs: %v\nCᴜsᴛᴏᴍɪᴢᴇᴅ Cʜᴀᴛs: %v", users, mfilters, chats)
 }
 
 func (db *Database) GetConnection(userID int64) (int64, bool) {
 	res := db.Ucol.FindOne(context.TODO(), bson.D{{Key: "_id", Value: userID}})
 
 	var doc bson.M
+
 	res.Decode(&doc)
 
 	val, ok := doc["connected"]
@@ -119,6 +120,7 @@ func (db *Database) GetConnection(userID int64) (int64, bool) {
 
 func (db *Database) ConnectUser(userID, chatID int64) {
 	var tf = true
+
 	_, err := db.Ucol.UpdateOne(context.TODO(), bson.D{{Key: "_id", Value: userID}}, bson.D{{Key: "$set", Value: bson.D{{Key: "connected", Value: chatID}}}}, &options.UpdateOptions{Upsert: &tf})
 	if err != nil {
 		fmt.Printf("db.connectuser: %v\n", err)
@@ -177,6 +179,7 @@ func (db *Database) StringMfilter(chatID int64) string {
 
 	for r.Next(context.TODO()) {
 		var d bson.M
+
 		r.Decode(&d)
 		text += fmt.Sprintf("\n• <code>%v</code>", d["text"])
 	}
@@ -243,7 +246,6 @@ func (db *Database) RecacheSettings(chatID int64) {
 
 		cachedSettings[chatID] = &r
 	}
-
 }
 
 func (db *Database) GetCachedSetting(chatID int64) *ChatSettings {

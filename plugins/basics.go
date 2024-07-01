@@ -62,7 +62,6 @@ func GetID(bot *gotgbot.Bot, ctx *ext.Context) error {
 			case m.SenderUser != nil:
 				text += fmt.Sprintf("\nForwarded from : <code>%v</code>", m.SenderUser.Id)
 			}
-
 		}
 	}
 

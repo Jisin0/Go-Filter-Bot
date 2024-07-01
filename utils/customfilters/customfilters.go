@@ -148,11 +148,9 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 			return c, false
 		}
 
-		fmt.Println(c)
 		return c, true
 	default:
 		fmt.Println("Unknown ChatType ", chatType)
 		return c, false
-
 	}
 }
