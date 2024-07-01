@@ -29,7 +29,7 @@ var globalNumber int64 = 101
 var DB database.Database = database.NewDatabase()
 
 func MFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
-	//Manual filter function
+	// Manual filter function
 
 	var chat_id int64
 	update := ctx.Message
@@ -58,7 +58,7 @@ func MFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		fmt.Println(e)
 		return nil
 	} else {
-		//Trying to find a regex match
+		// Trying to find a regex match
 		for res.Next(context.TODO()) {
 			var f database.Filter
 			res.Decode(&f)
@@ -75,11 +75,11 @@ func MFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 }
 
 func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
-	//Function to handle filter and gfilter commands
+	// Function to handle filter and gfilter commands
 	var c int64
 	update := ctx.Message
 
-	//I didnt wanna create a whole new function for gfilter so ...
+	// I didnt wanna create a whole new function for gfilter so ...
 	if strings.HasPrefix(update.Text, "/gfilter") {
 		for _, admin := range Admins {
 			if update.From.Id == admin {
@@ -91,7 +91,7 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 			return nil
 		}
 	} else {
-		//Verifying and getting connections for private chats
+		// Verifying and getting connections for private chats
 		var v bool
 		c, v = customfilters.Verify(bot, ctx)
 		if !v {
@@ -134,17 +134,17 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		text += update.ReplyToMessage.Caption
 
 		if update.ReplyToMessage.ReplyMarkup != nil {
-			//Buttons are converted to maps to save to the database
+			// Buttons are converted to maps to save to the database
 			button = buttonToMap(ctx.Message.ReplyToMessage.ReplyMarkup.InlineKeyboard)
 		}
 	}
 
-	//Creating a random string with length 15
+	// Creating a random string with length 15
 	uniqueID := utils.RandString(15)
 
 	text, button, alert := parseButtons(text, uniqueID, button)
 
-	//Finding media if any
+	// Finding media if any
 	var fileId string
 	var mediaType string
 	if update.ReplyToMessage != nil {
@@ -169,7 +169,7 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		}
 	}
 
-	//Saving acquired data
+	// Saving acquired data
 	//	data := bson.D{
 	//		{Key: "_id", Value: uniqueID},
 	//		{Key: "group_id", Value: c},
@@ -208,7 +208,7 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 }
 
 func CbStop(bot *gotgbot.Bot, ctx *ext.Context) error {
-	//Function to handle callbacks from confirm buttons when stopping a filter
+	// Function to handle callbacks from confirm buttons when stopping a filter
 	update := ctx.CallbackQuery
 	var c int64
 	var v bool
@@ -220,7 +220,7 @@ func CbStop(bot *gotgbot.Bot, ctx *ext.Context) error {
 		c = update.Message.GetChat().Id
 	}
 
-	//Making sure the callback data is valid
+	// Making sure the callback data is valid
 	args := strings.Split(cbstopRegex.FindStringSubmatch(update.Data)[1], "|")
 	if len(args) < 3 {
 		update.Answer(bot, &gotgbot.AnswerCallbackQueryOpts{Text: "Bad Button :(", ShowAlert: true})
@@ -236,7 +236,7 @@ func CbStop(bot *gotgbot.Bot, ctx *ext.Context) error {
 			DB.DeleteMfilter(c, key)
 			update.Message.EditText(bot, fmt.Sprintf("Manual Filter For <code>%v</code> Was Deleted Successfully !", key), &gotgbot.EditMessageTextOpts{ParseMode: "HTML"})
 		} else if erase == "n" {
-			//Unused till now, maybe might use it later
+			// Unused till now, maybe might use it later
 			update.Message.EditText(bot, fmt.Sprintf(`Are You Sure You Want To Permanently Delete The Manual Filter For %v ?\nClick The "Yes I'm Sure" Button To Confirm `, key), &gotgbot.EditMessageTextOpts{ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "Ignore", CallbackData: "close"}, {Text: "Yes I'm Sure", CallbackData: fmt.Sprintf("stopf(%v|local|y)", key)}}}}, ParseMode: "HTML"})
 		}
 	} else if ftype == "global" {
@@ -255,7 +255,7 @@ func CbStop(bot *gotgbot.Bot, ctx *ext.Context) error {
 }
 
 func StopMfilter(bot *gotgbot.Bot, ctx *ext.Context) error {
-	//Function to handle the stop command
+	// Function to handle the stop command
 	var c int64
 	var v bool
 	c, v = customfilters.Verify(bot, ctx)
@@ -282,18 +282,18 @@ func StopMfilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		key = split[1]
 	}
 
-	//Checking if theres a local/global filter for the key
+	// Checking if theres a local/global filter for the key
 	_, k := DB.GetMfilter(c, key)
 	_, ok := DB.GetMfilter(globalNumber, key)
 
-	//If there isnt local or global
+	// If there isnt local or global
 	if !k && !ok {
 		update.Reply(bot, fmt.Sprintf("I Couldnt Find Any Filter For <code>%v</code> To Stop :(", key), &gotgbot.SendMessageOpts{ParseMode: "HTML"})
 		return nil
 	}
 
 	if len(key) < 20 {
-		//Both local and global
+		// Both local and global
 		if k && ok {
 			markup := gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "Local", CallbackData: fmt.Sprintf("stopf(%v|local|y)", key)}, {Text: "Global", CallbackData: fmt.Sprintf("stopf(%v|global|y)", key)}}}}
 			_, err := update.Reply(bot, "Please Select If You Would Like To Stop The Manual Filter (which you saved) Or Global Filter (saved by owners) For <code>"+key+"</code>", &gotgbot.SendMessageOpts{ParseMode: "HTML", ReplyMarkup: markup})
@@ -301,14 +301,14 @@ func StopMfilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 				fmt.Println(err)
 			}
 		} else if k {
-			//Only local
+			// Only local
 			markup := gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "CONFIRM", CallbackData: fmt.Sprintf("stopf(%v|local|y)", key)}}}}
 			_, err := update.Reply(bot, "Please Press The Button Below To Confirm Deletion Of Manual Filter For <code>"+key+"</code>", &gotgbot.SendMessageOpts{ParseMode: "HTML", ReplyMarkup: markup})
 			if err != nil {
 				fmt.Println(err)
 			}
 		} else if ok {
-			//Only global
+			// Only global
 			markup := gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "CONFIRM", CallbackData: fmt.Sprintf("stopf(%v|global|y)", key)}}}}
 			_, err := update.Reply(bot, "Please Press The Button Below To Stop Global Filter For <code>"+key+"</code>", &gotgbot.SendMessageOpts{ParseMode: "HTML", ReplyMarkup: markup})
 			if err != nil {
@@ -324,7 +324,7 @@ func StopMfilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 }
 
 func AllMfilters(bot *gotgbot.Bot, ctx *ext.Context) error {
-	//Function to handle the /filters command
+	// Function to handle the /filters command
 	update := ctx.Message
 	var c int64 = update.Chat.Id
 
@@ -340,7 +340,7 @@ func AllMfilters(bot *gotgbot.Bot, ctx *ext.Context) error {
 }
 
 func CbAlert(bot *gotgbot.Bot, ctx *ext.Context) error {
-	//Function to handle callbacks from alert button in saved filters
+	// Function to handle callbacks from alert button in saved filters
 	update := ctx.CallbackQuery
 
 	args := strings.Split(cbalertRegex.FindStringSubmatch(update.Data)[1], "|")
@@ -361,7 +361,7 @@ func CbAlert(bot *gotgbot.Bot, ctx *ext.Context) error {
 }
 
 func buttonToMap(btn [][]gotgbot.InlineKeyboardButton) [][]map[string]string {
-	//Convert a button into a map
+	// Convert a button into a map
 	var totalButtons [][]map[string]string
 	var rowButtons []map[string]string
 
@@ -385,7 +385,7 @@ func buttonToMap(btn [][]gotgbot.InlineKeyboardButton) [][]map[string]string {
 }
 
 func mapToButton(data [][]map[string]string) [][]gotgbot.InlineKeyboardButton {
-	//Convert a map back into button
+	// Convert a map back into button
 	var totalButtons [][]gotgbot.InlineKeyboardButton
 	for _, i := range data {
 		var rowButtons []gotgbot.InlineKeyboardButton
@@ -443,10 +443,10 @@ func parseButtons(text string, uniqueId string, totalButtons [][]map[string]stri
 }
 
 func sendFilter(f database.Filter, bot *gotgbot.Bot, update *gotgbot.Message, chat_id int64, message_id int64) {
-	//A function to send a filter if the regex matches
-	//I just made this func bcuz i'd have to duplicate it for mfilter and gfilter
+	// A function to send a filter if the regex matches
+	// I just made this func bcuz i'd have to duplicate it for mfilter and gfilter
 
-	//Find buttons saved for the filter and convert it from map
+	// Find buttons saved for the filter and convert it from map
 	var buttons [][]gotgbot.InlineKeyboardButton = mapToButton(f.Markup)
 
 	markup := gotgbot.InlineKeyboardMarkup{InlineKeyboard: buttons}

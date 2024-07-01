@@ -73,7 +73,7 @@ func CbStats(bot *gotgbot.Bot, update *ext.Context) error {
 }
 
 func FilterHandler(b *gotgbot.Bot, ctx *ext.Context) error {
-	//What R U Lookking At Its Just a Pro Function ;)
+	// What R U Lookking At Its Just a Pro Function ;)
 
 	go MFilter(b, ctx)
 	go GFilter(b, ctx)
@@ -82,7 +82,7 @@ func FilterHandler(b *gotgbot.Bot, ctx *ext.Context) error {
 }
 
 func CbEdit(bot *gotgbot.Bot, update *ext.Context) error {
-	//Function to handle edit() callbacks from the Start, About and Help menus
+	// Function to handle edit() callbacks from the Start, About and Help menus
 
 	key := cbEditPattern.FindStringSubmatch(update.CallbackQuery.Data)[1]
 	markup, ok := utils.BUTTONS[key]

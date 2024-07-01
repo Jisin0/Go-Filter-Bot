@@ -70,7 +70,7 @@ func GFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 }
 
 func StartGlobal(bot *gotgbot.Bot, ctx *ext.Context) error {
-	//Function to handle the startglobal command
+	// Function to handle the startglobal command
 	update := ctx.Message
 	var c int64
 	c, v := customfilters.Verify(bot, ctx)
@@ -105,7 +105,7 @@ func StartGlobal(bot *gotgbot.Bot, ctx *ext.Context) error {
 }
 
 func Gfilters(bot *gotgbot.Bot, ctx *ext.Context) error {
-	//Function to handle /gfilters function
+	// Function to handle /gfilters function
 	text := DB.StringMfilter(globalNumber)
 
 	ctx.Message.Reply(bot, "Aʟʟ ғɪʟᴛᴇʀs sᴀᴠᴇᴅ ғᴏʀ ɢʟᴏʙᴀʟ ᴜsᴀɢᴇ :\n"+text, &gotgbot.SendMessageOpts{ParseMode: "HTML"})

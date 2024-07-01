@@ -17,7 +17,7 @@ import (
 
 func main() {
 
-	//Run a useless http server to get a healthy build on koyeb
+	// Run a useless http server to get a healthy build on koyeb
 	go func() {
 		port := os.Getenv("PORT")
 
@@ -51,7 +51,7 @@ func main() {
 		panic("failed to create new bot: " + err.Error())
 	}
 
-	//To make sure no other instance of the bot is running
+	// To make sure no other instance of the bot is running
 	_, err = b.GetUpdates(&gotgbot.GetUpdatesOpts{})
 	if err != nil {
 		fmt.Println("Exiting because : " + err.Error())
@@ -69,7 +69,7 @@ func main() {
 	})
 	updater := ext.NewUpdater(dispatcher, &ext.UpdaterOpts{})
 
-	//Add update handlers
+	// Add update handlers
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("start", plugins.Start), 1)
 	dispatcher.AddHandlerToGroup(handlers.NewCallback(callbackquery.Equal("stats"), plugins.CbStats), 3)
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("stats", plugins.Stats), 3)

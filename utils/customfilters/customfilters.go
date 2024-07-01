@@ -21,7 +21,7 @@ func Listen(m *gotgbot.Message) filters.Message {
 }
 
 func PrivateOrGroup(msg *gotgbot.Message) bool {
-	//A Function To Filter Group & SuperGroup Message
+	// A Function To Filter Group & SuperGroup Message
 
 	return msg.Chat.Type == "supergroup" || msg.Chat.Type == "group" || msg.Chat.Type == "private"
 }

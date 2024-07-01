@@ -14,7 +14,7 @@ import (
 var cbConnectRegex *regexp.Regexp = regexp.MustCompile(`cbconnect\((.+)\)`)
 
 func Connect(bot *gotgbot.Bot, update *ext.Context) error {
-	//Check for any existing connections first
+	// Check for any existing connections first
 	_, k := DB.GetConnection(update.Message.From.Id)
 	if k {
 		update.Message.Reply(
@@ -25,7 +25,7 @@ func Connect(bot *gotgbot.Bot, update *ext.Context) error {
 		return nil
 	} else {
 		if update.Message.Chat.Type == "private" {
-			//Require a chat id if the command was used in a private chat
+			// Require a chat id if the command was used in a private chat
 			args := strings.Split(update.Message.Text, " ")
 			var chat_raw string
 			if len(args) < 2 {
@@ -40,7 +40,7 @@ func Connect(bot *gotgbot.Bot, update *ext.Context) error {
 			}
 			chat_id, e := strconv.ParseInt(chat_raw, 0, 64)
 			if e != nil {
-				//If converion of raw chat_id to an int64 fails i.e it isnt a number
+				// If converion of raw chat_id to an int64 fails i.e it isnt a number
 				update.Message.Reply(
 					bot,
 					"That Doesnt Seem Like A Valid ChatId A ChatId Looks Something Like -100xxxxxxxxxx :(",
@@ -48,7 +48,7 @@ func Connect(bot *gotgbot.Bot, update *ext.Context) error {
 				)
 				return nil
 			} else {
-				//Verify and connect
+				// Verify and connect
 				admins, err := bot.GetChatAdministrators(chat_id, &gotgbot.GetChatAdministratorsOpts{})
 				if err != nil {
 					update.Message.Reply(
@@ -78,9 +78,9 @@ func Connect(bot *gotgbot.Bot, update *ext.Context) error {
 				}
 			}
 		} else if update.Message.Chat.Type == "supergroup" || update.Message.Chat.Type == "group" {
-			//For groups or supergroups just connect
+			// For groups or supergroups just connect
 			if update.Message.From.Id == 0 {
-				//Connect using button in case user is anonymous
+				// Connect using button in case user is anonymous
 				update.Message.Reply(
 					bot,
 					"It Looks Like You Are Anonymous Click The Button Below To Connect :(",
@@ -90,7 +90,7 @@ func Connect(bot *gotgbot.Bot, update *ext.Context) error {
 				)
 				return nil
 			} else {
-				//Verification stuff
+				// Verification stuff
 				admins, _ := bot.GetChatAdministrators(update.Message.Chat.Id, &gotgbot.GetChatAdministratorsOpts{})
 
 				for _, admin := range admins {
@@ -120,7 +120,7 @@ func Connect(bot *gotgbot.Bot, update *ext.Context) error {
 }
 
 func CbConnect(bot *gotgbot.Bot, update *ext.Context) error {
-	//Function to handle callback from connect button
+	// Function to handle callback from connect button
 	action := cbConnectRegex.FindStringSubmatch(update.CallbackQuery.Data)[1]
 	if action == "con" {
 		admins, _ := bot.GetChatAdministrators(update.CallbackQuery.Message.GetChat().Id, &gotgbot.GetChatAdministratorsOpts{})
@@ -154,7 +154,7 @@ func CbConnect(bot *gotgbot.Bot, update *ext.Context) error {
 }
 
 func Disconnect(bot *gotgbot.Bot, update *ext.Context) error {
-	//Function to handle /diconnect command
+	// Function to handle /diconnect command
 	if update.Message.From.Id == 0 {
 		update.Message.Reply(
 			bot,

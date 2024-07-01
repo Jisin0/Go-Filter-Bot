@@ -20,16 +20,16 @@ const (
 )
 
 type Listeners struct {
-	//Filter which checks if message is a match
+	// Filter which checks if message is a match
 	Filter filters.Message
 
-	//Function to be called if filter matches
+	// Function to be called if filter matches
 	Callback handlers.Response
 
-	//Unix timestamp at which the handler was added (Timeout after 300s)
+	// Unix timestamp at which the handler was added (Timeout after 300s)
 	AddedTime int64
 
-	//Channel to which message is passed
+	// Channel to which message is passed
 	Channel chan *gotgbot.Message
 }
 
@@ -38,12 +38,12 @@ func RunListening(bot *gotgbot.Bot, update *ext.Context) error {
 
 	for i, u := range Listening {
 		if u.Filter(update.Message) {
-			//Delete handler from slice
+			// Delete handler from slice
 			Listening[i] = Listening[len(Listening)-1] // Copy last element to index i.
 			Listening[len(Listening)-1] = Listeners{}  // Erase last element (write zero value).
-			Listening = Listening[:len(Listening)-1]   //Completely Remove That Last Value
+			Listening = Listening[:len(Listening)-1]   // Completely Remove That Last Value
 
-			//Send message to channel
+			// Send message to channel
 			u.Channel <- update.Message
 
 			return nil
@@ -67,13 +67,13 @@ var ListenTimeout error
 //
 // Returns either the message if it was received or a ListenTimeout error
 func ListenMessage(ctx context.Context, filter filters.Message) (*gotgbot.Message, error) {
-	//Make a channel
+	// Make a channel
 	c := make(chan *gotgbot.Message, 1)
 
-	//Add details to listening slice
+	// Add details to listening slice
 	Listening = append(Listening, Listeners{Filter: filter, Channel: c})
 
-	//Listen for either a message or timeout
+	// Listen for either a message or timeout
 	select {
 	case <-ctx.Done():
 		return nil, ListenTimeout
@@ -101,18 +101,18 @@ func listenRequestFilter(chat *gotgbot.Chat, user *gotgbot.User, msgId int64) fi
 // user - The user expected to answer
 func Ask(bot *gotgbot.Bot, text string, chat *gotgbot.Chat, user *gotgbot.User) *gotgbot.Message {
 
-	//initial msg which's id is later used as the pinpoint of the converation's start
+	// initial msg which's id is later used as the pinpoint of the converation's start
 	firstM, err := bot.SendMessage(chat.Id, text, &gotgbot.SendMessageOpts{ParseMode: "HTML"})
 	if err != nil {
 		fmt.Println("error while asking ", err)
 		return nil
 	}
 
-	//create context with 5 min timeout
+	// create context with 5 min timeout
 	ctx, cancel := context.WithTimeout(context.Background(), fiveMinutes)
 	defer cancel()
 
-	//listen for matching messages
+	// listen for matching messages
 	msg, err := ListenMessage(ctx, listenRequestFilter(chat, user, firstM.MessageId))
 	if err != nil {
 		bot.SendMessage(chat.Id, "<i>Request timed out ❗</i>", &gotgbot.SendMessageOpts{ParseMode: "HTML"})

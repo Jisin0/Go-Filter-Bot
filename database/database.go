@@ -19,38 +19,38 @@ var defaultChatSettings ChatSettings = ChatSettings{
 }
 
 type ChatSettings struct {
-	//Stopped Global Filters
+	// Stopped Global Filters
 	Stopped []string
 }
 
 type Filter struct {
-	//A filter object stored in the database
+	// A filter object stored in the database
 
-	//Unique id of the filter
+	// Unique id of the filter
 	Id string `bson:"_id"`
 
-	//Chat where the filter is in effect
+	// Chat where the filter is in effect
 	ChatId int64 `bson:"group_id"`
 
-	//The key/text which is filtered
+	// The key/text which is filtered
 	Text string `bson:"text"`
 
-	//The text content/caption saved
+	// The text content/caption saved
 	Content string `bson:"content"`
 
-	//The id of a media saved for the filter if any
+	// The id of a media saved for the filter if any
 	FileID string `bson:"file"`
 
-	//Buttons/markup saved for a filter if any
+	// Buttons/markup saved for a filter if any
 	Markup [][]map[string]string `bson:"button"`
 
-	//Alerts saved for a filter if any
+	// Alerts saved for a filter if any
 	Alerts []string `bson:"alert"`
 
-	//Length of the text according to which filters are sorted
+	// Length of the text according to which filters are sorted
 	Length int `bson:"length"`
 
-	//Type of media saved if any
+	// Type of media saved if any
 	MediaType string `bson:"mediaType"`
 }
 
@@ -79,19 +79,19 @@ func NewDatabase() Database {
 
 type Database struct {
 
-	//Mongo Client
+	// Mongo Client
 	Client *mongo.Client
 
-	//Database
+	// Database
 	Db *mongo.Database
 
-	//Users Collection
+	// Users Collection
 	Ucol *mongo.Collection
 
-	//Main Collection
+	// Main Collection
 	Col *mongo.Collection
 
-	//Manual Filters Collection
+	// Manual Filters Collection
 	Mcol *mongo.Collection
 }
 
@@ -209,7 +209,7 @@ func defaultSettings(chat_id int64) bson.D {
 }
 
 func (db Database) RecacheSettings(chat_id int64) {
-	//A Function To Update Cached Settings With Latest From DB
+	// A Function To Update Cached Settings With Latest From DB
 
 	res := db.Col.FindOne(context.TODO(), bson.D{{Key: "_id", Value: chat_id}})
 	if res.Err() == mongo.ErrNoDocuments {
@@ -254,7 +254,7 @@ func (db Database) StartGfilter(chat_id int64, key string) {
 	}
 
 	db.Col.UpdateOne(context.TODO(), bson.D{{Key: "_id", Value: chat_id}}, bson.D{{Key: "$set", Value: bson.D{{Key: "stopped", Value: keys}}}})
-	//go db.RecacheSettings(chat_id)
+	// go db.RecacheSettings(chat_id)
 }
 
 func (db Database) GetAlert(uniqueID string, index int) string {

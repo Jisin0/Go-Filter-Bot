@@ -28,7 +28,7 @@ func RandString(length int) string {
 }
 
 func GetAdmins() []int64 {
-	//Create a list of admins from the ADMINS environment variable
+	// Create a list of admins from the ADMINS environment variable
 	var nums []int64
 
 	for _, n := range strings.Split(os.Getenv("ADMINS"), " ") {
