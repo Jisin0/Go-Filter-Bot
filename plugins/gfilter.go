@@ -74,7 +74,7 @@ func GFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 			var filter database.Filter
 
 			res.Decode(&filter)
-			sendFilter(filter, bot, update, chatID, messageID)
+			sendFilter(&filter, bot, update, chatID, messageID)
 		}
 	}
 

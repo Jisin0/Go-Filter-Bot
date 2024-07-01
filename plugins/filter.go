@@ -72,7 +72,7 @@ func MFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 			m := pattern.FindStringSubmatch(message)
 			if len(m) > 0 {
-				sendFilter(f, bot, update, chatID, messageID)
+				sendFilter(&f, bot, update, chatID, messageID)
 			}
 		}
 	}
@@ -474,7 +474,7 @@ func parseButtons(text string, uniqueID string, totalButtons [][]map[string]stri
 	return strings.Trim(returnText, " "), totalButtons, alert
 }
 
-func sendFilter(f database.Filter, bot *gotgbot.Bot, update *gotgbot.Message, chatID int64, messageID int64) {
+func sendFilter(f *database.Filter, bot *gotgbot.Bot, update *gotgbot.Message, chatID int64, messageID int64) {
 	// A function to send a filter if the regex matches
 	// I just made this func bcuz i'd have to duplicate it for mfilter and gfilter
 
