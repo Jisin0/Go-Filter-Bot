@@ -303,20 +303,21 @@ func StopMfilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	if len(key) < 20 {
 		// Both local and global
-		if k && ok {
+		switch {
+		case k && ok:
 			markup := gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "Local", CallbackData: fmt.Sprintf("stopf(%v|local|y)", key)}, {Text: "Global", CallbackData: fmt.Sprintf("stopf(%v|global|y)", key)}}}}
 			_, err := update.Reply(bot, "Please Select If You Would Like To Stop The Manual Filter (which you saved) Or Global Filter (saved by owners) For <code>"+key+"</code>", &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: markup})
 			if err != nil {
 				fmt.Println(err)
 			}
-		} else if k {
+		case k:
 			// Only local
 			markup := gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "CONFIRM", CallbackData: fmt.Sprintf("stopf(%v|local|y)", key)}}}}
 			_, err := update.Reply(bot, "Please Press The Button Below To Confirm Deletion Of Manual Filter For <code>"+key+"</code>", &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: markup})
 			if err != nil {
 				fmt.Println(err)
 			}
-		} else if ok {
+		case ok:
 			// Only global
 			markup := gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "CONFIRM", CallbackData: fmt.Sprintf("stopf(%v|global|y)", key)}}}}
 			_, err := update.Reply(bot, "Please Press The Button Below To Stop Global Filter For <code>"+key+"</code>", &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: markup})
@@ -390,13 +391,15 @@ func buttonToMap(btn [][]gotgbot.InlineKeyboardButton) [][]map[string]string {
 		for _, j := range i {
 			b := map[string]string{"Text": j.Text}
 
-			if j.CallbackData != "" {
+			switch {
+			case j.CallbackData != "":
 				b["CallbackData"] = j.CallbackData
-			} else if j.Url != "" {
+			case j.Url != "":
 				b["Url"] = j.Url
-			} else {
+			default:
 				continue
 			}
+
 			rowButtons = append(rowButtons, b)
 		}
 		totalButtons = append(totalButtons, rowButtons)
