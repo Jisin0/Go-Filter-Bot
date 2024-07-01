@@ -13,7 +13,7 @@ import (
 
 func Broadcast(bot *gotgbot.Bot, ctx *ext.Context) error {
 	// Function to handle /broadcast command
-	if !IsAdmin(ctx.Message.From.Id) {
+	if !isAdmin(ctx.Message.From.Id) {
 		ctx.Message.Reply(bot, "<b>Sorry Thats An Admin Only Command :(</b>", &gotgbot.SendMessageOpts{ParseMode: "HTML", ReplyParameters: &gotgbot.ReplyParameters{MessageId: ctx.Message.MessageId}})
 		return nil
 	}
@@ -128,7 +128,7 @@ Total   : %v
 
 func ConCast(bot *gotgbot.Bot, ctx *ext.Context) error {
 	// Function to handle the /concast command
-	if !IsAdmin(ctx.Message.From.Id) {
+	if !isAdmin(ctx.Message.From.Id) {
 		ctx.Message.Reply(bot, "<b>Sorry Thats An Owner Only Command :(</b>", &gotgbot.SendMessageOpts{ParseMode: "HTML", ReplyParameters: &gotgbot.ReplyParameters{MessageId: ctx.Message.MessageId}})
 		return nil
 	}
@@ -239,7 +239,7 @@ Total   : %v
 	return nil
 }
 
-func IsAdmin(user int64) bool {
+func isAdmin(user int64) bool {
 	for _, admin := range Admins {
 		if user == admin {
 			return true
