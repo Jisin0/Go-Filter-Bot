@@ -1,5 +1,4 @@
-# Go-Filter-Bot 
-[![telegram badge](https://img.shields.io/badge/Telegram-Channel-30302f?style=flat&logo=telegram)](https://telegram.dog/Jisin0)
+# Go-Filter-Bot [![telegram badge](https://img.shields.io/badge/Support-30302f?style=flat&logo=telegram)](https://telegram.dog/Jisin0)
 [![Go Report Card](https://goreportcard.com/badge/github.com/Jisin0/Go-Filter-Bot)](https://goreportcard.com/report/github.com/Jisin0/Go-Filter-Bot)
 [![Go Build](https://github.com/Jisin0/Go-Filter-Bot/workflows/Go/badge.svg)](https://github.com/Jisin0/Go-Filter-Bot/actions?query=workflow%3AGo+event%3Apush+branch%3Amain)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
@@ -27,7 +26,7 @@ A **Simple** Yet **Superfast** Filter Bot Written In Go Inspired By [Unlimimted-
 - [X] `BOT_TOKEN` : Bot token obtained by creating a bot from [@BotFather](https://telegram.dog/BotFather).
 - [X] `MONGODB_URI` : [MongoDB](https://www.mongodb.com) URI. Get this value from [mongoDB](https://www.mongodb.com). For more help watch this [video](https://youtu.be/1G1XwEOnxxo).
 - [X] `ADMINS` : Telegram user ids' of bot admins seperated by spaces.
-- [] `PORT` : The port on which the webapp should run (use 10000 on render)
+- [ ] `PORT` : The port on which the webapp should run (use 10000 on render)
 
 ## Deploy
 <details><summary>Deploy To Heroku</summary>
