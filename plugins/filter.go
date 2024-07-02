@@ -134,13 +134,15 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	parse := parseQuotes(strings.SplitN(update.Text, " ", 2)[1])
 
-	e := DB.Mcol.FindOne(context.TODO(), bson.D{{Key: "group_id", Value: c}, {Key: "text", Value: parse[0]}})
+	key := strings.ToLower(parse[0])
+
+	e := DB.Mcol.FindOne(context.TODO(), bson.D{{Key: "group_id", Value: c}, {Key: "text", Value: key}})
 	if e.Err() == nil {
 		update.Reply(
 			bot,
-			fmt.Sprintf("It Looks Like Another Filter For <code>%v</code> Has Already Been Saved In This Chat, If You Want To Stop It First Use The Button Below", parse[0]),
+			fmt.Sprintf("It Looks Like Another Filter For <code>%v</code> Has Already Been Saved In This Chat, If You Want To Stop It First Use The Button Below", key),
 			&gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{
-				{{Text: "Stop Filter", CallbackData: fmt.Sprintf("stopf(%v|%v|y)", parse[0], "local")}},
+				{{Text: "Stop Filter", CallbackData: fmt.Sprintf("stopf(%v|%v|y)", key, "local")}},
 			}}},
 		)
 
@@ -198,12 +200,12 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 	f := &database.Filter{
 		ID:        uniqueID,
 		ChatID:    c,
-		Text:      parse[0],
+		Text:      key,
 		Content:   text,
 		FileID:    fileID,
 		Markup:    button,
 		Alerts:    alert,
-		Length:    len(parse[0]),
+		Length:    len(key),
 		MediaType: mediaType,
 	}
 
@@ -211,7 +213,7 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	_, err := update.Reply(
 		bot,
-		fmt.Sprintf("<i>Successfully Saved A Manual Filter For <code>%v</code> !</i>", parse[0]),
+		fmt.Sprintf("<i>Successfully Saved A Manual Filter For <code>%v</code> !</i>", key),
 		&gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML},
 	)
 	if err != nil {
