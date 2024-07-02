@@ -312,8 +312,8 @@ func (db *Database) StartGfilter(chatID int64, key string) {
 }
 
 func (db *Database) GetAlert(uniqueID string, index int) string {
-	defaultString := "Button Does Not Exist :("
-	res := db.Mcol.FindOne(context.TODO(), bson.D{{Key: "unique_id", Value: uniqueID}})
+	defaultString := "404: Content Not Found !"
+	res := db.Mcol.FindOne(context.TODO(), bson.D{{Key: "_id", Value: uniqueID}})
 
 	var f Filter
 
