@@ -20,26 +20,26 @@ var TEXT map[string]string = map[string]string{
 	`,
 
 	"MF": `
-<b>Mᴀɴᴜᴀʟ ғɪʟᴛᴇʀs ᴀʟʟᴏᴡ ʏᴏᴜ ᴛᴏ sᴀᴠᴇ ᴄᴜsᴛᴏᴍ ғɪʟᴛᴇʀs ᴏᴛʜᴇʀ ᴛʜᴀɴ ᴛʜᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄ ᴏɴᴇs. Fɪʟᴛᴇʀs ᴄᴀɴ ʙᴇ ᴏғ ᴛᴇxᴛ/ᴘʜᴏᴛᴏ/ᴅᴏᴄᴜᴍᴇɴᴛ/ᴀᴜᴅɪᴏ/ᴀɴɪᴍᴀᴛɪᴏɴ/ᴠɪᴅᴇᴏ .</b>
+Mᴀɴᴜᴀʟ ғɪʟᴛᴇʀs ᴀʟʟᴏᴡ ʏᴏᴜ ᴛᴏ sᴀᴠᴇ ᴄᴜsᴛᴏᴍ ғɪʟᴛᴇʀs ᴏᴛʜᴇʀ ᴛʜᴀɴ ᴛʜᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄ ᴏɴᴇs. Fɪʟᴛᴇʀs ᴄᴀɴ ʙᴇ ᴏғ ᴛᴇxᴛ/ᴘʜᴏᴛᴏ/ᴅᴏᴄᴜᴍᴇɴᴛ/ᴀᴜᴅɪᴏ/ᴀɴɪᴍᴀᴛɪᴏɴ/ᴠɪᴅᴇᴏ .
 
 <b><u>Nᴇᴡ ғɪʟᴛᴇʀ :</u></b>
 
-<u>Fᴏʀᴍᴀᴛ</u>
-<code>/filter "keyword" text</code> or
-Rᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ -><code>/filter "keyword"</code>
-<u>Usᴀɢᴇ</u>
-<code>/filter "hi" hello</code>
-[<code>hello</code>] -> Reply -> <code>/filter hi</code>
+<b>Fᴏʀᴍᴀᴛ</b>
+  <code>/filter "keyword" text</code> or
+  Rᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ -><code>/filter "keyword"</code>
+<b>Usᴀɢᴇ</b>
+  <code>/filter "hi" hello</code>
+  [<code>hello</code>] -> Reply -> <code>/filter hi</code>
 
 <b><u>Sᴛᴏᴘ ғɪʟᴛᴇʀ :</u></b>
 
-<u>Fᴏʀᴍᴀᴛ</u>
-<code>/stop "keyword"</code>
-<u>Usᴀɢᴇ</u>
-<code>/stop "hi"</code>
+<b>Fᴏʀᴍᴀᴛ</b>
+  <code>/stop "keyword"</code>
+<b>Usᴀɢᴇ</b>
+  <code>/stop "hi"</code>
 
 <b><u>Vɪᴇᴡ ғɪʟᴛᴇʀs :</u></b>
-<code>/filters</code>
+  <code>/filters</code>
 `,
 
 	"GF": `
@@ -79,15 +79,14 @@ Rᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ -><code>/filter "keyword"</code>
 `,
 
 	"BTN": `
-Buttons are clickable textboxes attached to the base of a message.
-Buttons are split into different rows by using a new line.
 Here's a format of how you can add buttons to filters.
+Buttons are split into different rows by using a new line.
 
 <b>URL Button</b>
-  [Button Text](url:https://example.com)
+  <code>[Button Text](url:https://example.com)</code>
 
 <b>Alert Button</b>
-  [Button Text](alert:This is an alert)
+  <code>[Button Text](alert:This is an alert)</code>
 `,
 }
 
