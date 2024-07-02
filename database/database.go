@@ -33,17 +33,17 @@ type Filter struct {
 	// The key/text which is filtered
 	Text string `bson:"text"`
 	// The text content/caption saved
-	Content string `bson:"content"`
+	Content string `bson:"content,omitempty"`
 	// The id of a media saved for the filter if any
-	FileID string `bson:"file"`
+	FileID string `bson:"file,omitempty"`
 	// Buttons/markup saved for a filter if any
-	Markup [][]map[string]string `bson:"button"`
+	Markup [][]map[string]string `bson:"button,omitempty"`
 	// Alerts saved for a filter if any
-	Alerts []string `bson:"alert"`
+	Alerts []string `bson:"alert,omitempty"`
 	// Length of the text according to which filters are sorted
 	Length int `bson:"length"`
 	// Type of media saved if any
-	MediaType string `bson:"mediaType"`
+	MediaType string `bson:"mediaType,omitempty"`
 }
 
 // A User Saved in the database.
@@ -51,7 +51,7 @@ type User struct {
 	// Unique telegram id of the user.
 	ID int64 `bson:"_id"`
 	// ID of the chat to which the user is connected.
-	ConnectedChat int64 `bson:"connected"`
+	ConnectedChat int64 `bson:"connected,omitempty"`
 }
 
 func NewDatabase() *Database {
