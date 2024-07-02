@@ -103,7 +103,7 @@ var BUTTONS map[string][][]gotgbot.InlineKeyboardButton = map[string][][]gotgbot
 			{Text: "Home", CallbackData: "edit(START)"},
 			{Text: "Stats", CallbackData: "stats"},
 		}, {
-			{Text: "Source 🔗"},
+			{Text: "Source 🔗", Url: "https://github.com/Jisin0/Go-Filter-Bot"},
 		},
 	},
 	"STATS": {
