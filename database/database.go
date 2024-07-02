@@ -14,6 +14,7 @@ import (
 )
 
 var cachedSettings map[int64]*ChatSettings = make(map[int64]*ChatSettings)
+var connectionCache map[int64]int64 // cache users' connections.
 var defaultChatSettings ChatSettings = ChatSettings{
 	Stopped: []string{},
 }
@@ -43,6 +44,14 @@ type Filter struct {
 	Length int `bson:"length"`
 	// Type of media saved if any
 	MediaType string `bson:"mediaType"`
+}
+
+// A User Saved in the database.
+type User struct {
+	// Unique telegram id of the user.
+	ID int64 `bson:"_id"`
+	// ID of the chat to which the user is connected.
+	ConnectedChat int64 `bson:"connected"`
 }
 
 func NewDatabase() *Database {
@@ -82,13 +91,15 @@ type Database struct {
 
 func (db *Database) AddUser(userid int64) error {
 	var (
-		result bson.M
-		filter = bson.D{{Key: "_id", Value: userid}}
+		filter = User{ID: userid}
 	)
 
-	err := db.Ucol.FindOne(context.TODO(), filter).Decode(&result)
-	if err == mongo.ErrNoDocuments {
-		db.Ucol.InsertOne(context.TODO(), filter)
+	res := db.Ucol.FindOne(context.TODO(), filter)
+	if res.Err() == mongo.ErrNoDocuments {
+		_, err := db.Ucol.InsertOne(context.TODO(), filter)
+		if err != nil {
+			fmt.Printf("db.adduser: %v", err)
+		}
 	}
 
 	return nil
@@ -104,18 +115,31 @@ func (db *Database) Stats() string {
 }
 
 func (db *Database) GetConnection(userID int64) (int64, bool) {
+	if c, ok := connectionCache[userID]; ok {
+		if c == 0 {
+			ok = false
+		}
+
+		return c, ok
+	}
+
 	res := db.Ucol.FindOne(context.TODO(), bson.D{{Key: "_id", Value: userID}})
-
-	var doc bson.M
-
-	res.Decode(&doc)
-
-	val, ok := doc["connected"]
-	if val == nil {
+	if res.Err() != nil { // this shouldn't happen. the user should be saved in the db.
+		connectionCache[userID] = 0
 		return 0, false
 	}
 
-	return val.(int64), ok
+	var doc User
+
+	res.Decode(&doc)
+
+	connectionCache[userID] = doc.ConnectedChat
+
+	if doc.ConnectedChat != 0 {
+		return doc.ConnectedChat, true
+	}
+
+	return doc.ConnectedChat, false
 }
 
 func (db *Database) ConnectUser(userID, chatID int64) {
@@ -125,6 +149,9 @@ func (db *Database) ConnectUser(userID, chatID int64) {
 	if err != nil {
 		fmt.Printf("db.connectuser: %v\n", err)
 	}
+
+	// clear any cache.
+	delete(connectionCache, userID)
 }
 
 func (db *Database) SaveMfilter(data *Filter) {
@@ -139,6 +166,9 @@ func (db *Database) DeleteConnection(userID int64) {
 	if err != nil {
 		fmt.Printf("db.connectuser: %v\n", err)
 	}
+
+	// clear any cache.
+	delete(connectionCache, userID)
 }
 
 func (db *Database) GetMfilters(chatID int64) (*mongo.Cursor, error) {
