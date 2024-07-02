@@ -36,7 +36,9 @@ func Start(bot *gotgbot.Bot, update *ext.Context) error {
 }
 
 func Stats(bot *gotgbot.Bot, update *ext.Context) error {
-	_, err := update.EffectiveMessage.Reply(bot, DB.Stats(), &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML})
+	markup := gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "Refresh 🔄", CallbackData: "stats"}}}}
+
+	_, err := update.EffectiveMessage.Reply(bot, DB.Stats(), &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: markup})
 	if err != nil {
 		fmt.Printf("stats: %v\n", err)
 	}
