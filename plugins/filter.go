@@ -33,6 +33,8 @@ const (
 
 	filterSplitCount     = 3 // number of subtrings into which input of /filter command should be split
 	minButtonParseParams = 4 // Parse of a button should yield atleast this many values
+
+	alertCacheDuration = 3000 // number of seconds an alert should be cache by the client
 )
 
 const (
@@ -367,16 +369,16 @@ func CbAlert(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	args := strings.Split(cbalertRegex.FindStringSubmatch(update.Data)[1], "|")
 	if len(args) < 2 {
-		update.Answer(bot, &gotgbot.AnswerCallbackQueryOpts{Text: "Bad Request :(", ShowAlert: true})
+		update.Answer(bot, &gotgbot.AnswerCallbackQueryOpts{Text: "Bad Request !", ShowAlert: true})
 	} else {
 		uniqueID := args[0]
 
-		index, err := strconv.ParseInt(args[1], 0, 64)
+		index, err := strconv.Atoi(args[1])
 		if err != nil {
-			update.Answer(bot, &gotgbot.AnswerCallbackQueryOpts{Text: "Bad Request :(", ShowAlert: true})
+			update.Answer(bot, &gotgbot.AnswerCallbackQueryOpts{Text: "Bad Request !", ShowAlert: true})
 		} else {
-			text := DB.GetAlert(uniqueID, int(index))
-			update.Answer(bot, &gotgbot.AnswerCallbackQueryOpts{Text: text, ShowAlert: true})
+			text := DB.GetAlert(uniqueID, index)
+			update.Answer(bot, &gotgbot.AnswerCallbackQueryOpts{Text: text, ShowAlert: true, CacheTime: alertCacheDuration})
 		}
 	}
 
