@@ -1,11 +1,7 @@
-# Go Filter Bot
+# GoFilterBot [![telegram badge](https://img.shields.io/badge/Support-30302f?style=flat&logo=telegram)](https://telegram.dog/Jisin0) [![Go Report Card](https://goreportcard.com/badge/github.com/Jisin0/Go-Filter-Bot)](https://goreportcard.com/report/github.com/Jisin0/Go-Filter-Bot) [![Go Build](https://github.com/Jisin0/Go-Filter-Bot/workflows/Go/badge.svg)](https://github.com/Jisin0/Go-Filter-Bot/actions?query=workflow%3AGo+event%3Apush+branch%3Amain) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-<p align='center'>
 
-<img src="logo.jpg" alt="Logo">
-
-  <b>A Simple Yet Superfast Filter Bot Written In Go Inspired By <a href='https://github.com/TrojanzHex/Unlimited-Filter-Bot'>Unlimimted-Filter-Bot</a> with global filter support.</b>
-</p>
+A **Simple** Yet **Superfast** Filter Bot Written In Go Inspired By [Unlimimted-Filter-Bot](https://github.com/TrojanzHex/Unlimited-Filter-Bot) with global filter support.
 
 ## Commands
 
@@ -14,19 +10,20 @@
  * |- `/help`      Shows a help message                     [Group/DM]
  * |- `/filter`    Create a new filter for a word or phrase [Group/Connected DM]
  * |- `/stop`      Stop an existing filter                  [Group/Connected DM]
+ * |- `/gstop`     Stop an existing global filter           [Admin DM]
  * |- `/filters`   View all the filters saved for a chat    [Group/Connected DM]
  * |- `/gfilter`   Create a new global filter that will work in all chats [Admin DM]
  * |- `/gfilters`  View all the saved global filters        [All]
  * |- `/filter`    Create a new filter for a word or phrase [Group/Connected DM]
- * |- `/broadcast` Broadcast a message to all bot users     [Owner DM]
- * |- `/concast`   Broadcast a message to connected users   [Owner DM]
+ * |- `/broadcast` Broadcast a message to all bot users     [Admin DM]
+ * |- `/concast`   Broadcast a message to connected users   [Admin DM]
 
 ## Variables
 
 - [X] `BOT_TOKEN` : Bot token obtained by creating a bot from [@BotFather](https://telegram.dog/BotFather).
 - [X] `MONGODB_URI` : [MongoDB](https://www.mongodb.com) URI. Get this value from [mongoDB](https://www.mongodb.com). For more help watch this [video](https://youtu.be/1G1XwEOnxxo).
 - [X] `ADMINS` : Telegram user ids' of bot admins seperated by spaces.
-- [X] `PORT` : The port on which the webapp should run (use 10000 on render)
+- [ ] `PORT` : The port on which the webapp should run (use 10000 on render)
 
 ## Deploy
 <details><summary>Deploy To Heroku</summary>
@@ -38,6 +35,14 @@
 </p>
 </details>
 
+<details><summary>Deploy To Scalingo</summary>
+<p>
+<br>
+<a href="https://dashboard.scalingo.com/create/app?source=https://github.com/Jisin0/Go-Filter-Bot#main">
+   <img src="https://cdn.scalingo.com/deploy/button.svg" alt="Deploy on Scalingo" data-canonical-src="https://cdn.scalingo.com/deploy/button.svg" style="max-width:100%;">
+</a>
+</p>
+</details>
 
 <details><summary>Deploy To Render</summary>
 <p>
@@ -121,8 +126,6 @@ Join our telegram channel for more latest news and cool projects
  - Thanks To [Trojanz](https://github.com/trojanzhex) for Their Awesome [Unlimited Filter Bot](https://github.com/TroJanzHEX/Unlimited-Filter-Bot)
 
 ## Disclaimer
-[![GNU Affero General Public License 2.0](https://www.gnu.org/graphics/agplv3-155x51.png)](https://www.gnu.org/licenses/agpl-3.0.en.html#header)    
-Licensed under [GNU AGPL 2.0.](https://github.com/Jisin0/evamaria/blob/master/LICENSE)
+![GNU General Public License 3.0](https://www.gnu.org/graphics/gplv3-127x51.png)](https://www.gnu.org/licenses/gpl-3.0.en.html#header)    
+Licensed under [GNU GPL 3.0.](https://github.com/Jisin0/Go-Filter-Bot/blob/main/LICENSE).
 Selling The Codes To Other People For Money Is *Strictly Prohibited*.
-
-### Consider Following Me On Github Too :)

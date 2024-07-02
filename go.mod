@@ -4,7 +4,7 @@ module github.com/Jisin0/Go-Filter-Bot
 go 1.18
 
 require (
-	github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.26
+	github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.28
 	go.mongodb.org/mongo-driver v1.9.1
 )
 

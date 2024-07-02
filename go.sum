@@ -1,7 +1,7 @@
-github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.7 h1:RxePxfaCjLIDkYgRWRvlzBvo6OHox+gAO/PZu/jQgkQ=
-github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.7/go.mod h1:r815fYWTudnU9JhtsJAxUtuV7QrSgKpChJkfTSMFpfg=
 github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.26 h1:u1ZGYo3ml5ouOI9rCIknF0JO9REeKb69E6drCwZgZdc=
 github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.26/go.mod h1:kL1v4iIjlalwm3gCYGvF4NLa3hs+aKEfRkNJvj4aoDU=
+github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.28 h1:3EidAXUUuDBwaRX5881fmpGGv2WPnW9oHwRMlvdQiwU=
+github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.28/go.mod h1:kL1v4iIjlalwm3gCYGvF4NLa3hs+aKEfRkNJvj4aoDU=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
