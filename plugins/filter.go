@@ -256,13 +256,6 @@ func CbStop(bot *gotgbot.Bot, ctx *ext.Context) error {
 			update.Message.EditText(bot, fmt.Sprintf(`Are You Sure You Want To Permanently Delete The Manual Filter For %v ?\nClick The "Yes I'm Sure" Button To Confirm `, key), &gotgbot.EditMessageTextOpts{ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "Ignore", CallbackData: "close"}, {Text: "Yes I'm Sure", CallbackData: fmt.Sprintf("stopf(%v|local|y)", key)}}}}, ParseMode: gotgbot.ParseModeHTML})
 		}
 	} else if ftype == "global" {
-		if utils.IsAdmin(ctx.EffectiveUser.Id) {
-			DB.DeleteMfilter(globalNumber, key)
-			update.Message.EditText(bot, fmt.Sprintf("Global Filter For <code>%v</code> Was Deleted Successfully !", key), &gotgbot.EditMessageTextOpts{ParseMode: gotgbot.ParseModeHTML})
-
-			return nil
-		}
-
 		DB.StopGfilter(c, key)
 		update.Message.EditText(bot, fmt.Sprintf("Global Filter For <code>%v</code> Has Been Stopped Successfully !", key), &gotgbot.EditMessageTextOpts{ParseMode: gotgbot.ParseModeHTML})
 	}
@@ -307,7 +300,7 @@ func StopMfilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	// If there isnt local or global
 	if !k && !ok {
-		update.Reply(bot, fmt.Sprintf("I Couldnt Find Any Filter For <code>%v</code> To Stop :(", key), &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML})
+		update.Reply(bot, fmt.Sprintf("I Couldnt Find Any Filter For <code>%v</code> To Stop !", key), &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML})
 		return nil
 	}
 

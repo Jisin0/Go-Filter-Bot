@@ -98,6 +98,7 @@ func main() {
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("gfilter", plugins.NewFilter), commandHandlerGroup)
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("filters", plugins.AllMfilters), commandHandlerGroup)
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("stop", plugins.StopMfilter), commandHandlerGroup)
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("gstop", plugins.StopGfilter), commandHandlerGroup)
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("connect", plugins.Connect), commandHandlerGroup)
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("disconnect", plugins.Disconnect), commandHandlerGroup)
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("startglobal", plugins.StartGlobal), commandHandlerGroup)
