@@ -77,6 +77,18 @@ Rᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ -><code>/filter "keyword"</code>
 	"HELP": `
 <b>To know how to use my modules use the buttons below to get all my commands with usage examples !</b>
 `,
+
+	"BTN": `
+Buttons are clickable textboxes attached to the base of a message.
+Buttons are split into different rows by using a new line.
+Here's a format of how you can add buttons to filters.
+
+<b>URL Button</b>
+  [Button Text](url:https://example.com)
+
+<b>Alert Button</b>
+  [Button Text](alert:This is an alert)
+`,
 }
 
 var BUTTONS map[string][][]gotgbot.InlineKeyboardButton = map[string][][]gotgbot.InlineKeyboardButton{
@@ -108,4 +120,9 @@ var BUTTONS map[string][][]gotgbot.InlineKeyboardButton = map[string][][]gotgbot
 		},
 		{{Text: "Bᴀᴄᴋ ➔", CallbackData: "edit(START)"}},
 	},
+	"MF": {{
+		{Text: "ʙᴜᴛᴛᴏɴs", CallbackData: "edit(BTN)"},
+		{Text: "bᴀᴄᴋ ➔", CallbackData: "edit(HELP)"},
+	}},
+	"BTN": {{{Text: "bᴀᴄᴋ ➔", CallbackData: "edit(MF)"}}},
 }
