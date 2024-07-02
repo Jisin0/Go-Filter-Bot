@@ -494,7 +494,7 @@ func sendFilter(f *database.Filter, bot *gotgbot.Bot, update *gotgbot.Message, c
 
 	mediaType := f.MediaType
 	if mediaType != "" {
-		fileID := f.FileID
+		fileID := gotgbot.InputFileByID(f.FileID)
 
 		switch mediaType {
 		case "document":
