@@ -11,13 +11,12 @@ var TEXT map[string]string = map[string]string{
 
 <i>I can save a custom reply for a word in any chat. Check my help menu for more details.</i>
 	`,
+
 	"ABOUT": `
-<b>Լαɳցᥙαցҽ</b> : <a href='https://go.dev'>𝗚𝗢</a>
-<b>Ƒɾα𝓶ҽɯσƙ</b> : <a href='github.com/PaulSonOfLars/gotgbot'>𝗴𝗼𝘁𝗴𝗯𝗼𝘁</a>
-<b>Sҽɾʋҽɾ</b> : <a href='heroku.com'>𝗛𝗲𝗿𝗼𝗸𝘂</a>
-<b>Ɗα𝜏αẞαടҽ</b> : <a href='mongodb.org'>𝗠𝗼𝗻𝗴𝗼𝗗𝗕</a>
-<b>Ɗҽʋҽɬσρҽɾ</b> : <a href='t.me/jisin0'>𝗝𝗶𝘀𝗶𝗻𝟬</a>
-<b>Sᥙρρσɾ𝜏</b> : <a href='t.me/jisin_hub'>𝗛𝗲𝗿𝗲</a>
+<b>○ 𝖫𝖺𝗇𝗀𝗎𝖺𝗀𝖾 :</b> : <a href='https://go.dev'>GO</a>
+<b>○ 𝖫𝗂𝖻𝗋𝖺𝗋𝗒</b> : <a href='github.com/PaulSonOfLars/gotgbot'>gotgbot</a>
+<b>○ 𝖣𝖺𝗍𝖺𝖻𝖺𝗌𝖾</b> : <a href='mongodb.org'>mongoDB</a>
+<b>○ 𝖲𝗎𝗉𝗉𝗈𝗋𝗍</b> : <a href='t.me/Jisin0'>Here</a>
 	`,
 
 	"MF": `
@@ -83,21 +82,22 @@ Rᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ -><code>/filter "keyword"</code>
 var BUTTONS map[string][][]gotgbot.InlineKeyboardButton = map[string][][]gotgbot.InlineKeyboardButton{
 	"START": {
 		{
-			{Text: "☂ Aʙᴏᴜᴛ ☂", CallbackData: "edit(ABOUT)"},
-			{Text: "🧭 Help 🧭", CallbackData: "edit(HELP)"},
-			{Text: "🫂 Sᴜᴘᴘᴏʀᴛ 🫂", Url: "t.me/Jisin0"},
+			{Text: "About", CallbackData: "edit(ABOUT)"},
+			{Text: "Help", CallbackData: "edit(HELP)"},
 		},
 	},
 	"ABOUT": {
 		{
-			{Text: "𝙷𝙾𝙼𝙴", CallbackData: "edit(START)"},
-			{Text: "𝚂𝚃𝙰𝚃𝚂", CallbackData: "stats"},
+			{Text: "Home", CallbackData: "edit(START)"},
+			{Text: "Stats", CallbackData: "stats"},
+		}, {
+			{Text: "Source 🔗"},
 		},
 	},
 	"STATS": {
 		{
-			{Text: "𝙱𝙰𝙲𝙺", CallbackData: "edit(ABOUT)"},
-			{Text: "𝚁𝙴𝙵𝚁𝙴𝚂𝙷", CallbackData: "stats"},
+			{Text: "⬅ Back", CallbackData: "edit(ABOUT)"},
+			{Text: "Refresh 🔄", CallbackData: "stats"},
 		},
 	},
 	"HELP": {

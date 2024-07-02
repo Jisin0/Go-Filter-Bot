@@ -105,13 +105,19 @@ func (db *Database) AddUser(userid int64) error {
 	return nil
 }
 
+var statText string = `
+╭ ▸ Users : <code>%v</code> 
+├ ▸ Filters : <code>%v</code>
+╰ ▸ Groups : <code>%v</code>
+`
+
 //nolint:errcheck // meh
 func (db *Database) Stats() string {
 	users, _ := db.Ucol.CountDocuments(context.TODO(), bson.M{})
 	chats, _ := db.Col.CountDocuments(context.TODO(), bson.M{})
 	mfilters, _ := db.Mcol.CountDocuments(context.TODO(), bson.M{})
 
-	return fmt.Sprintf("<u>Cᴜɾɾҽɳ𝜏 Ɗα𝜏αßαടҽ S𝜏α𝜏ട </u>:\n\nUsᴇʀs: %v\nMᴀɴᴜᴀʟ Fɪʟᴛᴇʀs: %v\nCᴜsᴛᴏᴍɪᴢᴇᴅ Cʜᴀᴛs: %v", users, mfilters, chats)
+	return fmt.Sprintf(statText, users, mfilters, chats)
 }
 
 func (db *Database) GetConnection(userID int64) (int64, bool) {
