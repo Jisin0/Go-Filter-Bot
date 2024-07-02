@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/Jisin0/Go-Filter-Bot/utils"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,8 +15,8 @@ import (
 
 func Broadcast(bot *gotgbot.Bot, ctx *ext.Context) error {
 	// Function to handle /broadcast command
-	if !isAdmin(ctx.Message.From.Id) {
-		ctx.Message.Reply(bot, "<b>Sorry Thats An Admin Only Command :(</b>", &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyParameters: &gotgbot.ReplyParameters{MessageId: ctx.Message.MessageId}})
+	if !utils.IsAdmin(ctx.EffectiveUser.Id) {
+		ctx.Message.Reply(bot, "<b>Only bot admins can use this command !</b>", &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyParameters: &gotgbot.ReplyParameters{MessageId: ctx.Message.MessageId}})
 		return nil
 	}
 
@@ -150,14 +151,4 @@ Total   : %v
 	}
 
 	return nil
-}
-
-func isAdmin(user int64) bool {
-	for _, admin := range Admins {
-		if user == admin {
-			return true
-		}
-	}
-
-	return false
 }

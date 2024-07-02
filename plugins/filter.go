@@ -103,16 +103,12 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	// I didnt wanna create a whole new function for gfilter so ...
 	if strings.HasPrefix(update.Text, "/gfilter") {
-		for _, admin := range Admins {
-			if update.From.Id == admin {
-				c = globalNumber
-			}
-		}
-
-		if c != globalNumber {
+		if !utils.IsAdmin(ctx.EffectiveUser.Id) {
 			update.Reply(bot, "Thats an Admin-only Command :(", &gotgbot.SendMessageOpts{})
 			return nil
 		}
+
+		c = globalNumber
 	} else {
 		// Verifying and getting connections for private chats
 		var v bool
@@ -258,13 +254,11 @@ func CbStop(bot *gotgbot.Bot, ctx *ext.Context) error {
 			update.Message.EditText(bot, fmt.Sprintf(`Are You Sure You Want To Permanently Delete The Manual Filter For %v ?\nClick The "Yes I'm Sure" Button To Confirm `, key), &gotgbot.EditMessageTextOpts{ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "Ignore", CallbackData: "close"}, {Text: "Yes I'm Sure", CallbackData: fmt.Sprintf("stopf(%v|local|y)", key)}}}}, ParseMode: gotgbot.ParseModeHTML})
 		}
 	} else if ftype == "global" {
-		for _, admin := range Admins {
-			if update.From.Id == admin {
-				DB.DeleteMfilter(globalNumber, key)
-				update.Message.EditText(bot, fmt.Sprintf("Global Filter For <code>%v</code> Was Deleted Successfully !", key), &gotgbot.EditMessageTextOpts{ParseMode: gotgbot.ParseModeHTML})
+		if utils.IsAdmin(ctx.EffectiveUser.Id) {
+			DB.DeleteMfilter(globalNumber, key)
+			update.Message.EditText(bot, fmt.Sprintf("Global Filter For <code>%v</code> Was Deleted Successfully !", key), &gotgbot.EditMessageTextOpts{ParseMode: gotgbot.ParseModeHTML})
 
-				return nil
-			}
+			return nil
 		}
 
 		DB.StopGfilter(c, key)

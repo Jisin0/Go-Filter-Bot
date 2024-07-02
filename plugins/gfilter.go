@@ -9,14 +9,11 @@ import (
 	"strings"
 
 	"github.com/Jisin0/Go-Filter-Bot/database"
-	"github.com/Jisin0/Go-Filter-Bot/utils"
 	"github.com/Jisin0/Go-Filter-Bot/utils/customfilters"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 	"go.mongodb.org/mongo-driver/bson"
 )
-
-var Admins []int64 = utils.GetAdmins()
 
 func GFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 	var (

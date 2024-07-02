@@ -135,6 +135,7 @@ func Verify(bot *gotgbot.Bot, ctx *ext.Context) (int64, bool) {
 	case gotgbot.ChatTypePrivate:
 		c, ok := DB.GetConnection(userID)
 		if !ok {
+
 			bot.SendMessage(
 				chatID,
 				"Sorry You Have To Connect To A Chat To Use This Command Here :(",
