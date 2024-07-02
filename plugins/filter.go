@@ -136,6 +136,10 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	key := strings.ToLower(parse[0])
 
+	if len(key) > maxKeyLength {
+		update.Reply(bot, fmt.Sprintf("Sorry The Length of the Key Can't be More than %d Characters !\nInput Key: <code>%s</code>", maxKeyLength, key), &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML})
+	}
+
 	e := DB.Mcol.FindOne(context.TODO(), bson.D{{Key: "group_id", Value: c}, {Key: "text", Value: key}})
 	if e.Err() == nil {
 		update.Reply(
@@ -304,36 +308,31 @@ func StopMfilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		return nil
 	}
 
-	if len(key) < maxKeyLength {
-		// Both local and global
-		switch {
-		case k && ok:
-			markup := gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "Local", CallbackData: fmt.Sprintf("stopf(%v|local|y)", key)}, {Text: "Global", CallbackData: fmt.Sprintf("stopf(%v|global|y)", key)}}}}
+	// Both local and global
+	switch {
+	case k && ok:
+		markup := gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "Local", CallbackData: fmt.Sprintf("stopf(%v|local|y)", key)}, {Text: "Global", CallbackData: fmt.Sprintf("stopf(%v|global|y)", key)}}}}
 
-			_, err := update.Reply(bot, "Please Select If You Would Like To Stop The Manual Filter (which you saved) Or Global Filter (saved by owners) For <code>"+key+"</code>", &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: markup})
-			if err != nil {
-				fmt.Println(err)
-			}
-		case k:
-			// Only local
-			markup := gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "CONFIRM", CallbackData: fmt.Sprintf("stopf(%v|local|y)", key)}}}}
-
-			_, err := update.Reply(bot, "Please Press The Button Below To Confirm Deletion Of Manual Filter For <code>"+key+"</code>", &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: markup})
-			if err != nil {
-				fmt.Println(err)
-			}
-		case ok:
-			// Only global
-			markup := gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "CONFIRM", CallbackData: fmt.Sprintf("stopf(%v|global|y)", key)}}}}
-
-			_, err := update.Reply(bot, "Please Press The Button Below To Stop Global Filter For <code>"+key+"</code>", &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: markup})
-			if err != nil {
-				fmt.Println(err)
-			}
+		_, err := update.Reply(bot, "Please Select If You Would Like To Stop The Manual Filter (which you saved) Or Global Filter (saved by owners) For <code>"+key+"</code>", &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: markup})
+		if err != nil {
+			fmt.Println(err)
 		}
-	} else {
-		DB.DeleteMfilter(c, key)
-		update.Reply(bot, fmt.Sprintf("Manual Filter For <i>%v</i> Was Stopped Successfully !", key), &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML})
+	case k:
+		// Only local
+		markup := gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "CONFIRM", CallbackData: fmt.Sprintf("stopf(%v|local|y)", key)}}}}
+
+		_, err := update.Reply(bot, "Please Press The Button Below To Confirm Deletion Of Manual Filter For <code>"+key+"</code>", &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: markup})
+		if err != nil {
+			fmt.Println(err)
+		}
+	case ok:
+		// Only global
+		markup := gotgbot.InlineKeyboardMarkup{InlineKeyboard: [][]gotgbot.InlineKeyboardButton{{{Text: "CONFIRM", CallbackData: fmt.Sprintf("stopf(%v|global|y)", key)}}}}
+
+		_, err := update.Reply(bot, "Please Press The Button Below To Stop Global Filter For <code>"+key+"</code>", &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: markup})
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 
 	return nil
