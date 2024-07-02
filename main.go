@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"runtime/debug"
 
 	"github.com/Jisin0/Go-Filter-Bot/plugins"
 	"github.com/Jisin0/Go-Filter-Bot/utils"
@@ -24,6 +25,14 @@ const (
 )
 
 func main() {
+	defer func() {
+		if r := recover(); r != nil {
+			// Print reason for panic + stack for some sort of helpful log output
+			fmt.Println(r)
+			fmt.Println(string(debug.Stack()))
+		}
+	}()
+
 	// Run a useless http server to get a healthy build on koyeb
 	go func() {
 		port := os.Getenv("PORT")
