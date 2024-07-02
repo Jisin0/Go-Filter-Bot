@@ -14,7 +14,7 @@ import (
 )
 
 var cachedSettings map[int64]*ChatSettings = make(map[int64]*ChatSettings)
-var connectionCache map[int64]int64 // cache users' connections.
+var connectionCache map[int64]int64 = make(map[int64]int64) // cache users' connections.
 var defaultChatSettings ChatSettings = ChatSettings{
 	Stopped: []string{},
 }
