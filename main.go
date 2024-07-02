@@ -99,6 +99,7 @@ func main() {
 	dispatcher.AddHandlerToGroup(handlers.NewCallback(callbackquery.Prefix("cbconnect("), plugins.CbConnect), callbackHandlerGroup)
 	dispatcher.AddHandlerToGroup(handlers.NewCallback(callbackquery.Prefix("stopf("), plugins.CbStop), callbackHandlerGroup)
 	dispatcher.AddHandlerToGroup(handlers.NewCallback(callbackquery.Prefix("edit("), plugins.CbEdit), callbackHandlerGroup)
+	dispatcher.AddHandlerToGroup(handlers.NewCallback(callbackquery.Prefix("alert("), plugins.CbAlert), callbackHandlerGroup)
 	dispatcher.AddHandlerToGroup(handlers.NewCallback(callbackquery.Equal("stats"), plugins.CbStats), callbackHandlerGroup)
 
 	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.All, utils.RunListening), miscHandlerGroup)
