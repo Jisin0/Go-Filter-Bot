@@ -106,9 +106,9 @@ func (db *Database) AddUser(userid int64) error {
 }
 
 var statText string = `
-╭ ▸ Users : <code>%v</code> 
-├ ▸ Filters : <code>%v</code>
-╰ ▸ Groups : <code>%v</code>
+╭ ▸ <b>Users</b> : <code>%v</code> 
+├ ▸ <b>Filters</b> : <code>%v</code>
+╰ ▸ <b>Groups</b> : <code>%v</code>
 `
 
 //nolint:errcheck // meh
