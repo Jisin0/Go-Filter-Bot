@@ -5,6 +5,8 @@ services:
       BOT_TOKEN: $BOT_TOKEN 
       ADMINS: $ADMINS
       MONGODB_URI: $MONGODB_URI
+      PORT: $PORT
+      AUTO_DELETE: $AUTO_DELETE
     resources:
       cpu: 1000m
       memory: 3Gi

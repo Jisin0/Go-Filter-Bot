@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/Jisin0/Go-Filter-Bot/plugins"
+	"github.com/Jisin0/Go-Filter-Bot/utils/autodelete"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 )
@@ -71,6 +72,10 @@ func main() {
 	}
 
 	fmt.Printf("@%s Started !\n", b.User.Username)
+
+	if plugins.AutoDelete > 0 {
+		go autodelete.RunAutodel(b)
+	}
 
 	// Idle, to keep updates coming in, and avoid bot stopping.
 	updater.Idle()

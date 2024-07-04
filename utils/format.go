@@ -51,3 +51,14 @@ func IsAdmin(u int64) bool {
 
 	return false
 }
+
+// Checks if a string slice contains an item.
+func Contains(l []string, v string) bool {
+	for _, i := range l {
+		if i == v {
+			return true
+		}
+	}
+
+	return false
+}

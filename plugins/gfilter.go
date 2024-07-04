@@ -3,9 +3,7 @@
 package plugins
 
 import (
-	"context"
 	"fmt"
-	"regexp"
 	"strings"
 
 	"github.com/Jisin0/Go-Filter-Bot/database"
@@ -13,7 +11,6 @@ import (
 	"github.com/Jisin0/Go-Filter-Bot/utils/customfilters"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 func GFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
@@ -37,42 +34,33 @@ func GFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		return nil
 	}
 
-	res, e := DB.GetMfilters(globalNumber)
-	if e != nil {
-		fmt.Println(e)
+	var message string
+	switch {
+	case update.Text != "":
+		message = update.Text
+	case update.Caption != "":
+		message = update.Caption
+	default:
 		return nil
 	}
 
 	stopped := DB.GetCachedSetting(chatID).Stopped
 
-	for res.Next(context.TODO()) {
-		var f bson.M
+	var results []*database.Filter
 
-		res.Decode(&f)
+	fields := strings.Fields(message)
+	if len(fields) <= 15 { // uses new method only if input has <=15 substrings
+		results = DB.SearchMfilterNew(globalNumber, fields)
+	} else {
+		results = DB.SearchMfilterClassic(globalNumber, message)
+	}
 
-		key := f["text"].(string)
-		text := `(?i)( |^|[^\w])` + key + `( |$|[^\w])`
-		pattern := regexp.MustCompile(text)
-		m := pattern.FindStringSubmatch(update.Text)
-
-		if len(m) > 0 {
-			var isStopped = false
-
-			for _, k := range stopped {
-				if key == k {
-					isStopped = true
-				}
-			}
-
-			if isStopped {
-				continue
-			}
-
-			var filter database.Filter
-
-			res.Decode(&filter)
-			sendFilter(&filter, bot, update, chatID, messageID)
+	for _, f := range results {
+		if utils.Contains(stopped, f.Text) {
+			continue
 		}
+
+		sendFilter(f, bot, update, chatID, messageID)
 	}
 
 	return nil
