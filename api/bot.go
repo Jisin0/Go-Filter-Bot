@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"os"
 	"path"
-	"slices"
 	"strings"
 
 	"github.com/Jisin0/Go-Filter-Bot/plugins"
+	"github.com/Jisin0/Go-Filter-Bot/utils"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 )
 
@@ -32,7 +32,7 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 	bot, _ := gotgbot.NewBot(botToken, &gotgbot.BotOpts{DisableTokenCheck: true})
 
 	// Delete the webhook incase token is unauthorized.
-	if lenAllowedTokens > 0 && allowedTokens[0] != "" && !slices.Contains(allowedTokens, botToken) {
+	if lenAllowedTokens > 0 && allowedTokens[0] != "" && !utils.Contains(allowedTokens, botToken) {
 		bot.DeleteWebhook(&gotgbot.DeleteWebhookOpts{}) //nolint:errcheck // It doesn't matter if it errors
 		w.WriteHeader(statusCodeSuccess)
 
