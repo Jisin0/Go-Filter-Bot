@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
+	"strings"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -177,6 +179,7 @@ func (db *Database) DeleteConnection(userID int64) {
 	delete(connectionCache, userID)
 }
 
+// Returns all manual filters for a chat.
 func (db *Database) GetMfilters(chatID int64) (*mongo.Cursor, error) {
 	return db.Mcol.Aggregate(
 		context.TODO(),
@@ -185,6 +188,66 @@ func (db *Database) GetMfilters(chatID int64) (*mongo.Cursor, error) {
 			{{Key: "$sort", Value: bson.D{{Key: "length", Value: -1}}}},
 		},
 	)
+}
+
+// SearchMfilterClassic uses the traditional way of fetching mfilters by fetching all mfilters of a chat and doing regex queries individually.
+// This method is more resource intensive but could be faster for large scale bots with several hundred/thousand groups.
+func (db *Database) SearchMfilterClassic(chatID int64, input string) (results []*Filter) {
+	res, e := db.GetMfilters(chatID)
+	if e != nil {
+		fmt.Printf("db.searchmfiltersclassic: %v\n", e)
+		return results
+	}
+
+	for res.Next(context.TODO()) {
+		var f Filter
+
+		err := res.Decode(&f)
+		if err != nil {
+			fmt.Printf("db.searchmfilterclassic: %v\n", err)
+			continue
+		}
+
+		text := `(?i)( |^|[^\w])` + f.Text + `( |$|[^\w])`
+
+		pattern := regexp.MustCompile(text)
+
+		m := pattern.FindStringSubmatch(input)
+		if len(m) > 0 {
+			results = append(results, &f)
+		}
+	}
+
+	return results
+}
+
+// SearchMfilterNew does a regex query on the database shifting some load to mongodb.
+func (db *Database) SearchMfilterNew(chatID int64, fields []string) (results []*Filter) {
+	pattern := "(?i).*\\b(" + strings.Join(fields, "|") + ")\\b.*"
+	filter := bson.D{
+		{Key: "group_id", Value: chatID},
+		{Key: "text", Value: bson.M{"$regex": pattern}},
+	}
+
+	res, err := db.Mcol.Find(context.Background(), filter, options.Find().SetSort(bson.D{{Key: "length", Value: -1}}))
+	if err != nil {
+		fmt.Printf("db.searchmfilternew: %v\n", err)
+		return results
+	}
+
+	for res.Next(context.Background()) {
+		var r Filter
+
+		err := res.Decode(&r)
+		if err != nil {
+			fmt.Printf("db.searchmfilternew: %v\n", err)
+			continue
+		}
+
+		results = append(results, &r)
+	}
+
+	return results
 }
 
 func (db *Database) GetMfilter(chatID int64, key string) (bson.M, bool) {

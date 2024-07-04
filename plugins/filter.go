@@ -11,6 +11,7 @@ import (
 
 	"github.com/Jisin0/Go-Filter-Bot/database"
 	"github.com/Jisin0/Go-Filter-Bot/utils"
+	"github.com/Jisin0/Go-Filter-Bot/utils/autodelete"
 	"github.com/Jisin0/Go-Filter-Bot/utils/customfilters"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
@@ -69,26 +70,17 @@ func MFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		return nil
 	}
 
-	res, e := DB.GetMfilters(chatID)
-	if e != nil {
-		fmt.Printf("mfilter.getmfilters: %v\n", e)
-		return nil
+	var results []*database.Filter
+
+	fields := strings.Fields(message)
+	if len(fields) <= 15 { // uses new method only if input has <=15 substrings
+		results = DB.SearchMfilterNew(chatID, fields)
 	} else {
-		// Trying to find a regex match
-		for res.Next(context.TODO()) {
-			var f database.Filter
+		results = DB.SearchMfilterClassic(chatID, message)
+	}
 
-			res.Decode(&f)
-
-			text := `(?i)( |^|[^\w])` + f.Text + `( |$|[^\w])`
-
-			pattern := regexp.MustCompile(text)
-
-			m := pattern.FindStringSubmatch(message)
-			if len(m) > 0 {
-				sendFilter(&f, bot, update, chatID, messageID)
-			}
-		}
+	for _, f := range results {
+		sendFilter(f, bot, update, chatID, messageID)
 	}
 
 	return nil
@@ -490,6 +482,7 @@ func sendFilter(f *database.Filter, bot *gotgbot.Bot, update *gotgbot.Message, c
 		markup  = gotgbot.InlineKeyboardMarkup{InlineKeyboard: buttons}
 		content = f.Content
 		err     error
+		m       *gotgbot.Message
 	)
 
 	mediaType := f.MediaType
@@ -498,26 +491,34 @@ func sendFilter(f *database.Filter, bot *gotgbot.Bot, update *gotgbot.Message, c
 
 		switch mediaType {
 		case "document":
-			_, err = bot.SendDocument(chatID, fileID, &gotgbot.SendDocumentOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
+			m, err = bot.SendDocument(chatID, fileID, &gotgbot.SendDocumentOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
 		case "sticker":
-			_, err = bot.SendSticker(chatID, fileID, &gotgbot.SendStickerOpts{ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup})
+			m, err = bot.SendSticker(chatID, fileID, &gotgbot.SendStickerOpts{ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup})
 		case "video":
-			_, err = bot.SendVideo(chatID, fileID, &gotgbot.SendVideoOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
+			m, err = bot.SendVideo(chatID, fileID, &gotgbot.SendVideoOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
 		case "photo":
-			_, err = bot.SendPhoto(chatID, fileID, &gotgbot.SendPhotoOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
+			m, err = bot.SendPhoto(chatID, fileID, &gotgbot.SendPhotoOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
 		case "audio":
-			_, err = bot.SendAudio(chatID, fileID, &gotgbot.SendAudioOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
+			m, err = bot.SendAudio(chatID, fileID, &gotgbot.SendAudioOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
 		case "animation":
-			_, err = bot.SendAnimation(chatID, fileID, &gotgbot.SendAnimationOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
+			m, err = bot.SendAnimation(chatID, fileID, &gotgbot.SendAnimationOpts{Caption: content, ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
 		default:
 			fmt.Println("Unknown media type " + mediaType)
 		}
 	} else {
-		_, err = update.Reply(bot, content, &gotgbot.SendMessageOpts{ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
+		m, err = update.Reply(bot, content, &gotgbot.SendMessageOpts{ReplyParameters: &gotgbot.ReplyParameters{MessageId: messageID}, ReplyMarkup: markup, ParseMode: gotgbot.ParseModeHTML})
 	}
 
 	if err != nil {
 		fmt.Println(err)
 		fmt.Println(f)
+		return
+	}
+
+	if m != nil && AutoDelete > 0 {
+		err := autodelete.InsertAutodel(autodelete.AutodelData{ChatID: chatID, MessageID: m.MessageId}, AutoDelete)
+		if err != nil {
+			fmt.Printf("sendfilter: %v\n", err)
+		}
 	}
 }

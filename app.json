@@ -22,6 +22,10 @@
         "ADMINS": {
             "description": "A List Ids of bot admins seperated by spaces.",
             "value": ""
+        }, 
+        "AUTO_DELETE": {
+            "description": "Time in minutes after which filter results are automatically deleted.",
+            "value": ""
         }
     },
     "buildpacks": [
