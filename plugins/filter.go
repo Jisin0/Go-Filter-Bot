@@ -69,26 +69,8 @@ func MFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		return nil
 	}
 
-	res, e := DB.GetMfilters(chatID)
-	if e != nil {
-		fmt.Printf("mfilter.getmfilters: %v\n", e)
-		return nil
-	} else {
-		// Trying to find a regex match
-		for res.Next(context.TODO()) {
-			var f database.Filter
-
-			res.Decode(&f)
-
-			text := `(?i)( |^|[^\w])` + f.Text + `( |$|[^\w])`
-
-			pattern := regexp.MustCompile(text)
-
-			m := pattern.FindStringSubmatch(message)
-			if len(m) > 0 {
-				sendFilter(&f, bot, update, chatID, messageID)
-			}
-		}
+	for _, f := range DB.SearchMfilterClassic(chatID, message) {
+		sendFilter(f, bot, update, chatID, messageID)
 	}
 
 	return nil
