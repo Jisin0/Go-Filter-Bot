@@ -5,6 +5,8 @@ go 1.18
 
 require (
 	github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.28
+	github.com/jmoiron/sqlx v1.4.0
+	github.com/mattn/go-sqlite3 v1.14.22
 	go.mongodb.org/mongo-driver v1.16.0
 )
 
