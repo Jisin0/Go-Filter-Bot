@@ -1,0 +1,19 @@
+{
+    "build": {
+      "env": {
+        "GO_BUILD_FLAGS": "-ldflags '-s -w'"
+      }
+    },
+
+    "routes": [
+        {
+          "src": "/bot/.*",
+          "dest": "/api/bot.go"
+        },
+        {
+          "src": "/",
+          "dest": "/index.html"
+        }
+      ]
+}
+  
