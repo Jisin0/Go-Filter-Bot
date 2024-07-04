@@ -20,6 +20,10 @@ var ADMINS []int64
 func init() {
 	// Create a list of admins from the ADMINS environment variable
 	for _, n := range strings.Split(os.Getenv("ADMINS"), " ") {
+		if n == "" {
+			continue
+		}
+
 		num, err := strconv.ParseInt(n, 0, 64)
 		if err != nil {
 			fmt.Printf("invalid admin id: %v", n)
