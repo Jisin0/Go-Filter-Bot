@@ -516,7 +516,7 @@ func sendFilter(f *database.Filter, bot *gotgbot.Bot, update *gotgbot.Message, c
 	}
 
 	if m != nil && AutoDelete > 0 {
-		err := autodelete.InsertAutodel(autodelete.AutodelData{ChatID: chatID, MessageID: messageID}, AutoDelete)
+		err := autodelete.InsertAutodel(autodelete.AutodelData{ChatID: chatID, MessageID: m.MessageId}, AutoDelete)
 		if err != nil {
 			fmt.Printf("sendfilter: %v\n", err)
 		}
