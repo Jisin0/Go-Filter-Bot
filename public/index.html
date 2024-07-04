@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Filter Bot Connector</title>
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="bg-yellow-100 font-sans">
+  <div class="container mx-auto px-4 py-8 flex justify-center items-center min-h-screen">
+    <div id="mainContent" class="bg-yellow-100 rounded-lg shadow-md px-8 py-10 border border-yellow-700">
+      <h1 class="text-3xl font-bold text-yellow-700 mb-4">Connect a New Bot</h1>
+      <div class="flex flex-col space-y-4">
+        <label for="botToken" class="text-lg text-yellow-700">Enter your Bot Token:</label>
+        <div class="relative">
+          <span id="errorMessage" class="text-red-500 text-sm mb-2 invisible"></span>
+          <input type="text" id="botToken" class="rounded-full px-4 py-2 bg-yellow-200 text-yellow-900 focus:outline-none focus:ring-2 focus:ring-yellow-400 placeholder:text-gray-400 w-full">
+        </div>
+        <button type="button" id="connectButton" class="rounded-full px-8 py-2 bg-yellow-700 text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400">Connect</button>
+      </div>
+    </div>
+  </div>
+  <canvas id="canvas"></canvas>
+  <script>
+    const connectButton = document.getElementById('connectButton');
+    const botTokenInput = document.getElementById('botToken');
+    const errorMessage = document.getElementById('errorMessage');
+    const mainContent = document.getElementById('mainContent');
+
+    connectButton.addEventListener('click', async () => {
+      const botToken = botTokenInput.value.trim();
+      if (!botToken) {
+       showError('Bot token is required!');
+        return;
+      }
+
+      // Regex check the bot token first
+      if (!/^\d{5,}:\w{10,}/.test(botToken)){
+       showError('Bot token is invalid!');
+        return;
+      }
+
+      // Clear previous error states
+      errorMessage.classList.add('invisible');
+      errorMessage.textContent = '';
+      botTokenInput.classList.remove('border-red-500');
+
+      let currentUrl = window.location.origin;
+      // Use default url if null
+      if (currentUrl=='null') {
+        currentUrl = 'https://filmigobot.vercel.app';
+      }
+
+      const webhookUrl = `${currentUrl}/bot/${botToken}`;
+
+      try {
+        const response = await fetch('https://api.telegram.org/bot' + botToken + '/setWebhook', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: webhookUrl })
+        });
+
+        const data = await response.json();
+
+        if (data.ok) {
+          // Replace content with success message
+          mainContent.innerHTML = `
+            <div class="text-center">
+              <h1 class="text-4xl font-bold text-yellow-700 mb-4">Success 🎉</h1>
+              <p class="text-xl text-yellow-700">Bot Connected Successfully!</p>
+              <p class="text-base text-yellow-600">Make Sure you Have Set Inline Feedback to 100% from @botfather for The bot to Operate Smoothly</p>
+            </div>
+          `;
+          // Start confetti animation
+          startConfetti();
+        } else {
+          showError(data.description);
+          return;
+        }
+      } catch (error) {
+        console.error(error);
+       showError('An error occurred!');
+       return;
+      }
+    });
+
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorMessage.classList.remove('invisible');
+      botTokenInput.classList.add('border-red-500');
+    }
+
+    function startConfetti() {
+      let W = window.innerWidth;
+      let H = window.innerHeight;
+      const canvas = document.getElementById("canvas");
+      const context = canvas.getContext("2d");
+      const maxConfettis = 75;
+      const particles = [];
+
+      const possibleColors = [
+        "DodgerBlue",
+        "OliveDrab",
+        "Gold",
+        "Pink",
+        "SlateBlue",
+        "LightBlue",
+        "Gold",
+        "Violet",
+        "PaleGreen",
+        "SteelBlue",
+        "SandyBrown",
+        "Chocolate",
+        "Crimson"
+      ];
+
+      canvas.width = W;
+      canvas.height = H;
+
+      function randomFromTo(from, to) {
+        return Math.floor(Math.random() * (to - from + 1) + from);
+      }
+
+      function confettiParticle() {
+        this.x = Math.random() * W; // x
+        this.y = Math.random() * H - H; // y
+        this.r = randomFromTo(11, 33); // radius
+        this.d = Math.random() * maxConfettis + 11;
+        this.color =
+          possibleColors[Math.floor(Math.random() * possibleColors.length)];
+        this.tilt = Math.floor(Math.random() * 33) - 11;
+        this.tiltAngleIncremental = Math.random() * 0.07 + 0.05;
+        this.tiltAngle = 0;
+
+        this.draw = function() {
+          context.beginPath();
+          context.lineWidth = this.r / 2;
+          context.strokeStyle = this.color;
+          context.moveTo(this.x + this.tilt + this.r / 3, this.y);
+          context.lineTo(this.x + this.tilt, this.y + this.tilt + this.r / 5);
+          return context.stroke();
+        };
+      }
+
+      function Draw() {
+        const results = [];
+
+        // Magical recursive functional love
+        requestAnimationFrame(Draw);
+
+        context.clearRect(0, 0, W, window.innerHeight);
+
+        for (var i = 0; i < maxConfettis; i++) {
+          results.push(particles[i].draw());
+        }
+
+        let particle = {};
+        let remainingFlakes = 0;
+        for (var i = 0; i < maxConfettis; i++) {
+          particle = particles[i];
+
+          particle.tiltAngle += particle.tiltAngleIncremental;
+          particle.y += (Math.cos(particle.d) + 3 + particle.r / 2) / 4;
+          particle.tilt = Math.sin(particle.tiltAngle - i / 3) * 15;
+
+          if (particle.y <= H) remainingFlakes++;
+
+          // If a confetti has fluttered out of view,
+          // bring it back to above the viewport and let if re-fall.
+          if (particle.x > W + 30 || particle.x < -30 || particle.y > H) {
+            particle.x = Math.random() * W;
+            particle.y = -30;
+            particle.tilt = Math.floor(Math.random() * 10) - 20;
+          }
+        }
+      }
+
+      for (var i = 0; i < maxConfettis; i++) {
+        particles.push(new confettiParticle());
+      }
+
+      Draw();
+    }
+  </script>
+</body>
+</html>

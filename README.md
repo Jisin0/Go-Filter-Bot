@@ -1,7 +1,8 @@
 # GoFilterBot [![telegram badge](https://img.shields.io/badge/Support-30302f?style=flat&logo=telegram)](https://telegram.dog/Jisin0) [![Go Report Card](https://goreportcard.com/badge/github.com/Jisin0/Go-Filter-Bot)](https://goreportcard.com/report/github.com/Jisin0/Go-Filter-Bot) [![Go Build](https://github.com/Jisin0/Go-Filter-Bot/workflows/Go/badge.svg)](https://github.com/Jisin0/Go-Filter-Bot/actions?query=workflow%3AGo+event%3Apush+branch%3Amain) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 
-A **Simple** Yet **Superfast** Filter Bot Written In Go Inspired By [Unlimimted-Filter-Bot](https://github.com/TrojanzHex/Unlimited-Filter-Bot) with global filter support.
+A **Simple**, **Superfast** and **Serverless** Filter Bot Written in Go with Global Filters and Autodelete support.
+The repository can be hosted on vercel as a serverless application with close to no downsides.
 
 ## Commands
 
@@ -27,6 +28,19 @@ A **Simple** Yet **Superfast** Filter Bot Written In Go Inspired By [Unlimimted-
 - [ ] `PORT` : The port on which the webapp should run (use 10000 on render)
 
 ## Deploy
+<details><summary>Deploy To Vercel</summary>
+<p>
+Follow these instructions to deploy this repo to <b>vercel</b>
+<ol type="1">
+<li><b>Fork</b> this repository 🍴</li>
+<li>Go to your <a href="https://vercel.com">vercel</a> dashboard and create a <b>Add New > Project</b></li>
+<li>Fill in the <b>BOT_TOKEN</b> and <b>MONGODB_URI</b> environment variables</li>
+<li>Click <b>Deploy</b> and wait</li>
+<li>Open your app and put in your bot token and click <b>Connect</b></li>
+</ol>
+</p>
+</details>
+
 <details><summary>Deploy To Heroku</summary>
 <p>
 <br>
