@@ -50,9 +50,9 @@ func GFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	fields := strings.Fields(message)
 	if len(fields) <= 15 { // uses new method only if input has <=15 substrings
-		results = DB.SearchMfilterNew(chatID, fields)
+		results = DB.SearchMfilterNew(globalNumber, fields)
 	} else {
-		results = DB.SearchMfilterClassic(chatID, message)
+		results = DB.SearchMfilterClassic(globalNumber, message)
 	}
 
 	for _, f := range results {
