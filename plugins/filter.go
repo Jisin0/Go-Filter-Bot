@@ -69,7 +69,16 @@ func MFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		return nil
 	}
 
-	for _, f := range DB.SearchMfilterClassic(chatID, message) {
+	var results []*database.Filter
+
+	fields := strings.Fields(message)
+	if len(fields) <= 15 { // uses new method only if input has <=15 substrings
+		results = DB.SearchMfilterNew(chatID, fields)
+	} else {
+		results = DB.SearchMfilterClassic(chatID, message)
+	}
+
+	for _, f := range results {
 		sendFilter(f, bot, update, chatID, messageID)
 	}
 

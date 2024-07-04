@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/Jisin0/Go-Filter-Bot/database"
 	"github.com/Jisin0/Go-Filter-Bot/utils"
 	"github.com/Jisin0/Go-Filter-Bot/utils/customfilters"
 	"github.com/PaulSonOfLars/gotgbot/v2"
@@ -45,7 +46,16 @@ func GFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	stopped := DB.GetCachedSetting(chatID).Stopped
 
-	for _, f := range DB.SearchMfilterClassic(chatID, message) {
+	var results []*database.Filter
+
+	fields := strings.Fields(message)
+	if len(fields) <= 15 { // uses new method only if input has <=15 substrings
+		results = DB.SearchMfilterNew(chatID, fields)
+	} else {
+		results = DB.SearchMfilterClassic(chatID, message)
+	}
+
+	for _, f := range results {
 		if utils.Contains(stopped, f.Text) {
 			continue
 		}
