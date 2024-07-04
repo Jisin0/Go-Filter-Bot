@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"runtime/debug"
+	"time"
 
 	"github.com/Jisin0/Go-Filter-Bot/plugins"
 	"github.com/PaulSonOfLars/gotgbot/v2"
@@ -57,8 +58,8 @@ func main() {
 	// To make sure no other instance of the bot is running
 	_, err = b.GetUpdates(&gotgbot.GetUpdatesOpts{})
 	if err != nil {
-		fmt.Println("Exiting because : " + err.Error())
-		return
+		fmt.Println("waiting 10s because : " + err.Error())
+		time.Sleep(10 * time.Second)
 	}
 
 	updater := ext.NewUpdater(plugins.Dispatcher, &ext.UpdaterOpts{})
