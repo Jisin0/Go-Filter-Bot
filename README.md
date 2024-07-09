@@ -7,18 +7,18 @@ The repository can be hosted on vercel as a serverless application with close to
 ## Commands
 
 ```
-`/start`    - Shows a start message                    [Group/DM]
-`/about`    - Shows an about message                   [Group/DM]
-`/help`     - Shows a help message                     [Group/DM]
-`/filter`   - Create a new filter for a word or phrase [Group/Connected DM]
-`/stop`     - Stop an existing filter                  [Group/Connected DM]
-`/gstop`    - Stop an existing global filter           [Admin DM]
-`/filters`  - View all the filters saved for a chat    [Group/Connected DM]
-`/gfilter`  - Create a new global filter that will work in all chats [Admin DM]
-`/gfilters` - View all the saved global filters        [All]
-`/filter`   - Create a new filter for a word or phrase [Group/Connected DM]
-`/broadcast` - Broadcast a message to all bot users     [Admin DM]
-`/concast`  - Broadcast a message to connected users   [Admin DM]
+/start    - Shows a start message                    [Group/DM]
+/about    - Shows an about message                   [Group/DM]
+/help     - Shows a help message                     [Group/DM]
+/filter   - Create a new filter for a word or phrase [Group/Connected DM]
+/stop     - Stop an existing filter                  [Group/Connected DM]
+/gstop    - Stop an existing global filter           [Admin DM]
+/filters  - View all the filters saved for a chat    [Group/Connected DM]
+/gfilter  - Create a new global filter that will work in all chats [Admin DM]
+/gfilters - View all the saved global filters        [All]
+/filter   - Create a new filter for a word or phrase [Group/Connected DM]
+/broadcast - Broadcast a message to all bot users     [Admin DM]
+/concast  - Broadcast a message to connected users   [Admin DM]
  ```
 
 ## Variables
