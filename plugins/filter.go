@@ -5,6 +5,7 @@ package plugins
 import (
 	"context"
 	"fmt"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -19,10 +20,12 @@ import (
 )
 
 // Regex expressions for callbacks and filtering
-var buttonRegex *regexp.Regexp = regexp.MustCompile(`\[([^\[]+?)\]\((buttonurl|url|alert):(?:/{0,2})(.+?)\)`)
-var parseRegex *regexp.Regexp = regexp.MustCompile(`^"([^"]+)"`)
-var cbstopRegex *regexp.Regexp = regexp.MustCompile(`stopf\((.+)\)`)
-var cbalertRegex *regexp.Regexp = regexp.MustCompile(`alert\((.+)\)`)
+var (
+	buttonRegex  *regexp.Regexp = regexp.MustCompile(`\[([^\[]+?)\]\((buttonurl|url|alert):(?:/{0,2})(.+?)\)`)
+	parseRegex   *regexp.Regexp = regexp.MustCompile(`^"([^"]+)"`)
+	cbstopRegex  *regexp.Regexp = regexp.MustCompile(`stopf\((.+)\)`)
+	cbalertRegex *regexp.Regexp = regexp.MustCompile(`alert\((.+)\)`)
+)
 
 var DB *database.Database = database.NewDatabase()
 
@@ -41,6 +44,12 @@ const (
 const (
 	cbStopParamCount = 3 // number of parameters required for cbstop
 )
+
+var multiFilter bool // indicates wether multiple filters should be fetched for a message
+
+func init() {
+	multiFilter = strings.ToLower(os.Getenv("MULTI_FILTER")) == "true"
+}
 
 // Manual filter function
 func MFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
@@ -74,7 +83,7 @@ func MFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	fields := strings.Fields(message)
 	if len(fields) <= 15 { // uses new method only if input has <=15 substrings
-		results = DB.SearchMfilterNew(chatID, fields)
+		results = DB.SearchMfilterNew(chatID, fields, multiFilter)
 	} else {
 		results = DB.SearchMfilterClassic(chatID, message)
 	}

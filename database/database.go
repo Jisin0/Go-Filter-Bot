@@ -222,11 +222,28 @@ func (db *Database) SearchMfilterClassic(chatID int64, input string) (results []
 }
 
 // SearchMfilterNew does a regex query on the database shifting some load to mongodb.
-func (db *Database) SearchMfilterNew(chatID int64, fields []string) (results []*Filter) {
+func (db *Database) SearchMfilterNew(chatID int64, fields []string, multiFilter bool) (results []*Filter) {
 	pattern := "(?i).*\\b(" + strings.Join(fields, "|") + ")\\b.*"
 	filter := bson.D{
 		{Key: "group_id", Value: chatID},
 		{Key: "text", Value: bson.M{"$regex": pattern}},
+	}
+
+	if !multiFilter {
+		res := db.Mcol.FindOne(context.Background(), filter)
+		switch res.Err() {
+		case mongo.ErrNoDocuments:
+			return results
+		case nil:
+			var f Filter
+
+			if err := res.Decode(&f); err != nil {
+				fmt.Printf("db.searchmfilternew: %v\n", err)
+				return results
+			}
+
+			return append(results, &f)
+		}
 	}
 
 	res, err := db.Mcol.Find(context.Background(), filter, options.Find().SetSort(bson.D{{Key: "length", Value: -1}}))

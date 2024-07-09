@@ -50,7 +50,7 @@ func GFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	fields := strings.Fields(message)
 	if len(fields) <= 15 { // uses new method only if input has <=15 substrings
-		results = DB.SearchMfilterNew(globalNumber, fields)
+		results = DB.SearchMfilterNew(globalNumber, fields, multiFilter)
 	} else {
 		results = DB.SearchMfilterClassic(globalNumber, message)
 	}
