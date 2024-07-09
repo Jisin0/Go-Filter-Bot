@@ -7,6 +7,7 @@ services:
       MONGODB_URI: $MONGODB_URI
       PORT: $PORT
       AUTO_DELETE: $AUTO_DELETE
+      MULTI_FILTER: $MULTI_FILTER
     resources:
       cpu: 1000m
       memory: 3Gi

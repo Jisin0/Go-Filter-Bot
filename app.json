@@ -26,6 +26,10 @@
         "AUTO_DELETE": {
             "description": "Time in minutes after which filter results are automatically deleted.",
             "value": ""
+        },
+        "MULTI_FILTER": {
+            "description": "Set to True if multiple filters should be processed for a single message.",
+            "value": ""
         }
     },
     "buildpacks": [
