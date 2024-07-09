@@ -6,25 +6,28 @@ The repository can be hosted on vercel as a serverless application with close to
 
 ## Commands
 
- * |- `/start`     Shows a start message                    [Group/DM]
- * |- `/about`     Shows an about message                   [Group/DM]
- * |- `/help`      Shows a help message                     [Group/DM]
- * |- `/filter`    Create a new filter for a word or phrase [Group/Connected DM]
- * |- `/stop`      Stop an existing filter                  [Group/Connected DM]
- * |- `/gstop`     Stop an existing global filter           [Admin DM]
- * |- `/filters`   View all the filters saved for a chat    [Group/Connected DM]
- * |- `/gfilter`   Create a new global filter that will work in all chats [Admin DM]
- * |- `/gfilters`  View all the saved global filters        [All]
- * |- `/filter`    Create a new filter for a word or phrase [Group/Connected DM]
- * |- `/broadcast` Broadcast a message to all bot users     [Admin DM]
- * |- `/concast`   Broadcast a message to connected users   [Admin DM]
+```
+`/start`    - Shows a start message                    [Group/DM]
+`/about`    - Shows an about message                   [Group/DM]
+`/help`     - Shows a help message                     [Group/DM]
+`/filter`   - Create a new filter for a word or phrase [Group/Connected DM]
+`/stop`     - Stop an existing filter                  [Group/Connected DM]
+`/gstop`    - Stop an existing global filter           [Admin DM]
+`/filters`  - View all the filters saved for a chat    [Group/Connected DM]
+`/gfilter`  - Create a new global filter that will work in all chats [Admin DM]
+`/gfilters` - View all the saved global filters        [All]
+`/filter`   - Create a new filter for a word or phrase [Group/Connected DM]
+`/broadcast` - Broadcast a message to all bot users     [Admin DM]
+`/concast`  - Broadcast a message to connected users   [Admin DM]
+ ```
 
 ## Variables
 
 - [X] `BOT_TOKEN` : Bot token obtained by creating a bot from [@BotFather](https://telegram.dog/BotFather).
 - [X] `MONGODB_URI` : [MongoDB](https://www.mongodb.com) URI. Get this value from [mongoDB](https://www.mongodb.com). For more help watch this [video](https://youtu.be/1G1XwEOnxxo).
 - [X] `ADMINS` : Telegram user ids' of bot admins seperated by spaces.
-- [ ] `AUTO_DELETE`: Time in minutes after which a filter result should be automatically deleted. for ex: 60 for 1hour
+- [ ] `MULTI_FILTER` : Set to True if multiple filters should be processed for a single message (don't add on serverles).
+- [ ] `AUTO_DELETE`: Time in minutes after which a filter result should be automatically deleted. for ex: 60 for 1hour (won't work serverless).
 - [ ] `PORT` : The port on which the webapp should run (use 10000 on render)
 
 ## Deploy
