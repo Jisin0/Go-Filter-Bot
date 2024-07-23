@@ -4,6 +4,7 @@ package autodelete
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/PaulSonOfLars/gotgbot/v2"
@@ -21,6 +22,10 @@ type AutodelData struct {
 }
 
 func init() {
+	if os.Getenv("AUTO_DELETE") == "" {
+		return
+	}
+
 	var err error
 
 	db, err = sqlx.Open("sqlite3", "./cache.sqlite")
