@@ -60,5 +60,4 @@ func init() {
 	Dispatcher.AddHandlerToGroup(handlers.NewCallback(callbackquery.Equal("stats"), CbStats), callbackHandlerGroup)
 
 	Dispatcher.AddHandlerToGroup(handlers.NewMessage(message.All, utils.RunListening), miscHandlerGroup)
-
 }

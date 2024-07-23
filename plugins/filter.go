@@ -5,7 +5,6 @@ package plugins
 import (
 	"context"
 	"fmt"
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -13,6 +12,7 @@ import (
 	"github.com/Jisin0/Go-Filter-Bot/database"
 	"github.com/Jisin0/Go-Filter-Bot/utils"
 	"github.com/Jisin0/Go-Filter-Bot/utils/autodelete"
+	"github.com/Jisin0/Go-Filter-Bot/utils/config"
 	"github.com/Jisin0/Go-Filter-Bot/utils/customfilters"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
@@ -44,12 +44,6 @@ const (
 const (
 	cbStopParamCount = 3 // number of parameters required for cbstop
 )
-
-var multiFilter bool // indicates wether multiple filters should be fetched for a message
-
-func init() {
-	multiFilter = strings.ToLower(os.Getenv("MULTI_FILTER")) == "true"
-}
 
 // Manual filter function
 func MFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
@@ -83,7 +77,7 @@ func MFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	fields := strings.Fields(message)
 	if len(fields) <= 15 { // uses new method only if input has <=15 substrings
-		results = DB.SearchMfilterNew(chatID, fields, multiFilter)
+		results = DB.SearchMfilterNew(chatID, fields, config.MultiFilter)
 	} else {
 		results = DB.SearchMfilterClassic(chatID, message)
 	}

@@ -23,6 +23,8 @@ The repository can be hosted on vercel as a serverless application with close to
 
 ## Variables
 
+Variables can also be loaded by creating a ```.env``` file at the root of the repository. See [.env.sample](/.env.sample) to see the format to use.
+
 - [X] `BOT_TOKEN` : Bot token obtained by creating a bot from [@BotFather](https://telegram.dog/BotFather).
 - [X] `MONGODB_URI` : [MongoDB](https://www.mongodb.com) URI. Get this value from [mongoDB](https://www.mongodb.com). For more help watch this [video](https://youtu.be/1G1XwEOnxxo).
 - [X] `ADMINS` : Telegram user ids' of bot admins seperated by spaces.

@@ -6,10 +6,10 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"regexp"
 	"strings"
 
+	"github.com/Jisin0/Go-Filter-Bot/utils/config"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -57,12 +57,11 @@ type User struct {
 }
 
 func NewDatabase() *Database {
-	uri := os.Getenv("MONGODB_URI")
-	if uri == "" {
+	if config.MongodbURI == "" {
 		log.Fatal("You must set your 'MONGODB_URI' environmental variable :(")
 	}
 
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(config.MongodbURI))
 	if err != nil {
 		panic(err)
 	}

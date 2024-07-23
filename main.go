@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"os"
 	"runtime/debug"
 	"time"
 
 	"github.com/Jisin0/Go-Filter-Bot/plugins"
 	"github.com/Jisin0/Go-Filter-Bot/utils/autodelete"
+	"github.com/Jisin0/Go-Filter-Bot/utils/config"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 )
@@ -24,26 +24,19 @@ func main() {
 
 	// Run a useless http server to get a healthy build on koyeb
 	go func() {
-		port := os.Getenv("PORT")
-
-		if port == "" {
-			port = "8080"
-		}
-
 		http.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
 			fmt.Fprintf(w, "Waku Waku")
 		})
 
-		http.ListenAndServe(":"+port, nil)
+		http.ListenAndServe(":"+config.Port, nil)
 	}()
 
-	token := os.Getenv("BOT_TOKEN")
-	if token == "" {
+	if config.BotToken == "" {
 		panic("Exiting Because No BOT_TOKEN Provided :(")
 	}
 
 	// Create bot from environment value.
-	b, err := gotgbot.NewBot(token, &gotgbot.BotOpts{
+	b, err := gotgbot.NewBot(config.BotToken, &gotgbot.BotOpts{
 		BotClient: &gotgbot.BaseBotClient{
 			Client: http.Client{},
 			DefaultRequestOpts: &gotgbot.RequestOpts{

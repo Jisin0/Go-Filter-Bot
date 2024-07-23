@@ -4,9 +4,7 @@ package plugins
 
 import (
 	"fmt"
-	"os"
 	"regexp"
-	"strconv"
 
 	"github.com/Jisin0/Go-Filter-Bot/utils/config"
 	"github.com/PaulSonOfLars/gotgbot/v2"
@@ -15,19 +13,7 @@ import (
 
 var cbEditPattern *regexp.Regexp = regexp.MustCompile(`edit\((.+)\)`)
 
-var AutoDelete int64 // time in seconds after which a message should be automantically deleted.
-
-func init() {
-	if s := os.Getenv("AUTO_DELETE"); s != "" {
-		a, err := strconv.Atoi(s)
-		if err != nil {
-			fmt.Printf("bad value for AUTO_DELETE: %s", s)
-		}
-
-		AutoDelete = int64(a) * 60 // input is expected in minutes so convert it into seconds.
-	}
-
-}
+var AutoDelete = config.AutoDelete * 60 // time in seconds after which a message should be automantically deleted.
 
 func Start(bot *gotgbot.Bot, update *ext.Context) error {
 	go DB.AddUser(update.EffectiveMessage.From.Id)

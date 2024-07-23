@@ -4,9 +4,9 @@ package autodelete
 
 import (
 	"fmt"
-	"os"
 	"time"
 
+	"github.com/Jisin0/Go-Filter-Bot/utils/config"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
@@ -22,7 +22,7 @@ type AutodelData struct {
 }
 
 func init() {
-	if os.Getenv("AUTO_DELETE") == "" {
+	if config.AutoDelete == 0 {
 		return
 	}
 
