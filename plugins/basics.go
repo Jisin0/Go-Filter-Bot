@@ -8,7 +8,7 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/Jisin0/Go-Filter-Bot/utils"
+	"github.com/Jisin0/Go-Filter-Bot/utils/config"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 )
@@ -34,11 +34,11 @@ func Start(bot *gotgbot.Bot, update *ext.Context) error {
 
 	_, err := bot.SendMessage(
 		update.Message.Chat.Id,
-		fmt.Sprintf(utils.TEXT["START"], update.Message.From.FirstName, bot.FirstName),
+		fmt.Sprintf(config.TEXT["START"], update.Message.From.FirstName, bot.FirstName),
 		&gotgbot.SendMessageOpts{
 			ParseMode: gotgbot.ParseModeHTML,
 			ReplyMarkup: gotgbot.InlineKeyboardMarkup{
-				InlineKeyboard: utils.BUTTONS["START"],
+				InlineKeyboard: config.BUTTONS["START"],
 			},
 			ReplyParameters: &gotgbot.ReplyParameters{
 				AllowSendingWithoutReply: true,
@@ -102,7 +102,7 @@ func CbStats(bot *gotgbot.Bot, update *ext.Context) error {
 		ChatId:      update.CallbackQuery.Message.GetChat().Id,
 		MessageId:   update.CallbackQuery.Message.GetMessageId(),
 		ParseMode:   gotgbot.ParseModeHTML,
-		ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: utils.BUTTONS["STATS"]},
+		ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: config.BUTTONS["STATS"]},
 	})
 
 	if err != nil {
@@ -124,7 +124,7 @@ func FilterHandler(b *gotgbot.Bot, ctx *ext.Context) error {
 func CbEdit(bot *gotgbot.Bot, update *ext.Context) error {
 	key := cbEditPattern.FindStringSubmatch(update.CallbackQuery.Data)[1]
 
-	markup, ok := utils.BUTTONS[key]
+	markup, ok := config.BUTTONS[key]
 	if !ok {
 		markup = [][]gotgbot.InlineKeyboardButton{{{Text: "⤝ Bᴀᴄᴋ", CallbackData: "edit(HELP)"}}}
 	}
@@ -142,9 +142,9 @@ func CbEdit(bot *gotgbot.Bot, update *ext.Context) error {
 	var text string
 
 	if key == "START" {
-		text = fmt.Sprintf(utils.TEXT["START"], update.CallbackQuery.From.FirstName, bot.FirstName)
+		text = fmt.Sprintf(config.TEXT["START"], update.CallbackQuery.From.FirstName, bot.FirstName)
 	} else {
-		text = utils.TEXT[key]
+		text = config.TEXT[key]
 	}
 
 	_, _, err := update.CallbackQuery.Message.EditText(bot,
@@ -159,7 +159,7 @@ func CbEdit(bot *gotgbot.Bot, update *ext.Context) error {
 }
 
 func About(b *gotgbot.Bot, update *ext.Context) error {
-	_, err := update.Message.Reply(b, utils.TEXT["ABOUT"], &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: utils.BUTTONS["ABOUT"]}})
+	_, err := update.Message.Reply(b, config.TEXT["ABOUT"], &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: config.BUTTONS["ABOUT"]}})
 	if err != nil {
 		fmt.Printf("about: %v\n", err)
 	}
@@ -168,7 +168,7 @@ func About(b *gotgbot.Bot, update *ext.Context) error {
 }
 
 func Help(b *gotgbot.Bot, update *ext.Context) error {
-	_, err := update.Message.Reply(b, utils.TEXT["HELP"], &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: utils.BUTTONS["HELP"]}})
+	_, err := update.Message.Reply(b, config.TEXT["HELP"], &gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML, ReplyMarkup: gotgbot.InlineKeyboardMarkup{InlineKeyboard: config.BUTTONS["HELP"]}})
 	if err != nil {
 		fmt.Printf("help: %v\n", err)
 	}

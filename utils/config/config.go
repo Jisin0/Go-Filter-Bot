@@ -1,6 +1,6 @@
 // (c) Jisin0
 
-package utils
+package config
 
 import "github.com/PaulSonOfLars/gotgbot/v2"
 
