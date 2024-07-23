@@ -144,6 +144,6 @@ Join our telegram channel for more latest news and cool projects
  - Thanks To [Trojanz](https://github.com/trojanzhex) for Their Awesome [Unlimited Filter Bot](https://github.com/TroJanzHEX/Unlimited-Filter-Bot)
 
 ## Disclaimer
-![GNU General Public License 3.0](https://www.gnu.org/graphics/gplv3-127x51.png)](https://www.gnu.org/licenses/gpl-3.0.en.html#header)    
+[![GNU General Public License 3.0](https://www.gnu.org/graphics/gplv3-127x51.png)](https://www.gnu.org/licenses/gpl-3.0.en.html#header)    
 Licensed under [GNU GPL 3.0.](https://github.com/Jisin0/Go-Filter-Bot/blob/main/LICENSE).
 Selling The Codes To Other People For Money Is *Strictly Prohibited*.
