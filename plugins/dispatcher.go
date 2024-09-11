@@ -40,6 +40,7 @@ func init() {
 	Dispatcher.AddHandlerToGroup(handlers.NewCommand("help", Help), basicCommandsGroup)
 	Dispatcher.AddHandlerToGroup(handlers.NewCommand("stats", Stats), basicCommandsGroup)
 	Dispatcher.AddHandlerToGroup(handlers.NewCommand("id", GetID), basicCommandsGroup)
+	Dispatcher.AddHandlerToGroup(handlers.NewCommand("ping", Ping), basicCommandsGroup)
 
 	Dispatcher.AddHandlerToGroup(handlers.NewCommand("filter", NewFilter), commandHandlerGroup)
 	Dispatcher.AddHandlerToGroup(handlers.NewCommand("gfilter", NewFilter), commandHandlerGroup)

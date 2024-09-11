@@ -5,6 +5,7 @@ package plugins
 import (
 	"fmt"
 	"regexp"
+	"time"
 
 	"github.com/Jisin0/Go-Filter-Bot/utils/config"
 	"github.com/PaulSonOfLars/gotgbot/v2"
@@ -159,5 +160,23 @@ func Help(b *gotgbot.Bot, update *ext.Context) error {
 		fmt.Printf("help: %v\n", err)
 	}
 
+	return nil
+}
+
+func Ping(b *gotgbot.Bot, ctx *ext.Context) error {
+	chat := ctx.EffectiveChat
+	startTime := time.Now().UnixNano() / int64(time.Millisecond)
+	msg, _ := b.SendMessage(
+		chat.Id,
+		"<code>Pinging....</code>",
+		&gotgbot.SendMessageOpts{ParseMode: gotgbot.ParseModeHTML},
+	)
+	endTime := time.Now().UnixNano() / int64(time.Millisecond)
+	ping := endTime - startTime
+	msg.EditText(
+		b,
+		fmt.Sprintf("<b>Pong!</b> <code>%v</code>", ping),
+		&gotgbot.EditMessageTextOpts{ParseMode: gotgbot.ParseModeHTML},
+	)
 	return nil
 }
