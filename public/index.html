@@ -201,7 +201,7 @@
             }
 
             // Regex check the bot token first
-            if (!/^\d{5,}:\w{10,}/.test(botToken)) {
+            if (!/^\d{5,}:[\w-]{10,}/.test(botToken)) {
                 showError('Bot token is invalid!');
                 return;
             }
