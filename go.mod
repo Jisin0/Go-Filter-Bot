@@ -7,7 +7,7 @@ require (
 	github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.29
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/joho/godotenv v1.5.1
-	github.com/mattn/go-sqlite3 v1.14.22
+	github.com/mattn/go-sqlite3 v1.14.24
 	go.mongodb.org/mongo-driver v1.16.1
 )
 
