@@ -1,7 +1,7 @@
 filippo.io/edwards25519 v1.1.0 h1:FNf4tywRC1HmFuKW5xopWpigGjJKiJSV0Cqo0cJWDaA=
 filippo.io/edwards25519 v1.1.0/go.mod h1:BxyFTGdWcka3PhytdK4V28tE5sGfRvvvRV7EaN4VDT4=
-github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.29 h1:5/K8zgmoKnsegt6h9XvFIJAGxbHVWOEwSpjdjaySf6A=
-github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.29/go.mod h1:kL1v4iIjlalwm3gCYGvF4NLa3hs+aKEfRkNJvj4aoDU=
+github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.30 h1:kPFkEzqg3+5gu077Zrg+24d0rO0Iwdx/ZUUHFFprfsc=
+github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.30/go.mod h1:kL1v4iIjlalwm3gCYGvF4NLa3hs+aKEfRkNJvj4aoDU=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/go-sql-driver/mysql v1.8.1 h1:LedoTUt/eveggdHS9qUFC1EFSa8bU2+1pZjSRpvNJ1Y=
 github.com/go-sql-driver/mysql v1.8.1/go.mod h1:wEBSXgmK//2ZFJyE+qWnIsVGmvmEKlqwuVSjsCm7DZg=
