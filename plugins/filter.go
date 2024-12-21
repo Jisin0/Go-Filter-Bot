@@ -156,8 +156,8 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 	)
 
 	if update.ReplyToMessage != nil {
-		text += update.ReplyToMessage.Text
-		text += update.ReplyToMessage.Caption
+		text += update.ReplyToMessage.OriginalHTML()
+		text += update.ReplyToMessage.OriginalCaptionHTML()
 
 		if update.ReplyToMessage.ReplyMarkup != nil {
 			// Buttons are converted to maps to save to the database
