@@ -129,7 +129,7 @@ func NewFilter(bot *gotgbot.Bot, ctx *ext.Context) error {
 		return nil
 	}
 
-	parse := parseQuotes(strings.SplitN(update.Text, " ", 2)[1])
+	parse := ParseQuotes(strings.SplitN(update.Text, " ", 2)[1])
 
 	key := strings.ToLower(parse[0])
 
@@ -434,10 +434,10 @@ func mapToButton(data [][]map[string]string) [][]gotgbot.InlineKeyboardButton {
 	return totalButtons
 }
 
-func parseQuotes(text string) []string {
+func ParseQuotes(text string) []string {
 	res := parseRegex.FindStringSubmatch(text)
 	if len(res) > 0 {
-		return []string{res[1], strings.Replace(text, res[1], "", 1)}
+		return []string{res[1], strings.Replace(text, "\""+res[1]+"\"", "", 1)} // very hacky workaround by adding quotes //TODO: update regex to include quotes
 	} else {
 		split := strings.SplitN(text, " ", 2)
 		return []string{split[0], strings.Replace(text, split[0], "", 1)}
