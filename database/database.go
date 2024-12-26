@@ -316,7 +316,7 @@ func (db *Database) StopGfilter(chatID int64, key string) {
 func (db *Database) DeleteMfilter(chatID int64, key string) {
 	_, err := db.Mcol.DeleteOne(context.TODO(), bson.D{{Key: "group_id", Value: chatID}, {Key: "text", Value: key}})
 	if err != nil {
-		fmt.Printf("db.deletemfilter: %v", err)
+		fmt.Printf("db.deletemfilter: %v\n", err)
 	}
 }
 
@@ -325,7 +325,7 @@ func (db *Database) SetChatSetting(chatID int64, key string, value any) {
 
 	_, err := db.Col.UpdateOne(context.TODO(), bson.D{{Key: "_id", Value: chatID}}, bson.D{{Key: "$set", Value: bson.D{{Key: key, Value: value}}}})
 	if err != nil {
-		fmt.Printf("db.connectuser: %v", err)
+		fmt.Printf("db.connectuser: %v\n", err)
 		return
 	}
 
@@ -355,7 +355,7 @@ func (db *Database) RecacheSettings(chatID int64) {
 
 		err := res.Decode(&r)
 		if err != nil {
-			fmt.Printf("db.recachesettings: %v", err)
+			fmt.Printf("db.recachesettings: %v\n", err)
 			return
 		}
 
@@ -384,7 +384,7 @@ func (db *Database) StartGfilter(chatID int64, key string) {
 
 	_, err := db.Col.UpdateOne(context.TODO(), bson.D{{Key: "_id", Value: chatID}}, bson.D{{Key: "$set", Value: bson.D{{Key: "stopped", Value: keys}}}})
 	if err != nil {
-		fmt.Printf("db.startgfilter: %v", err)
+		fmt.Printf("db.startgfilter: %v\n", err)
 	}
 
 	go db.RecacheSettings(chatID)

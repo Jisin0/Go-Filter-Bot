@@ -59,7 +59,12 @@ func main() {
 	updater := ext.NewUpdater(plugins.Dispatcher, &ext.UpdaterOpts{})
 
 	// Start receiving updates.
-	err = updater.StartPolling(b, &ext.PollingOpts{DropPendingUpdates: true})
+	err = updater.StartPolling(b, &ext.PollingOpts{
+		DropPendingUpdates: true,
+		GetUpdatesOpts: &gotgbot.GetUpdatesOpts{
+			AllowedUpdates: []string{"message", "callback_query", "channel_post", "inline_query", "chosen_inline_result", "chat_member", "my_chat_member"},
+		},
+	})
 	if err != nil {
 		panic("failed to start polling: " + err.Error())
 	}
